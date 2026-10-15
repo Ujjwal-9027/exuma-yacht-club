@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { PackageOpen, ShoppingBag } from "lucide-react";
 import { getActiveProducts } from "@/lib/products";
-import { ButtonLink, Container, PageHero } from "@/components/ui";
+import { ButtonLink, Container } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { ProductCard } from "@/components/product-card";
+import { ShopHero } from "@/components/shop-hero";
 
 export const dynamic = "force-dynamic";
 
@@ -35,13 +36,7 @@ export default async function ShopPage({
 
   return (
     <>
-      <PageHero
-        overline="Merchandise & Gift Shop"
-        title="The club collection"
-        lede="Club apparel and island essentials. Place your order online and collect it at the marina gift shop — payment is taken at pickup."
-        image="/images/marina-docks.jpg"
-        imageAlt="The marina at Exuma Yacht Club, home of the gift shop"
-      />
+      <ShopHero />
 
       <section aria-labelledby="products-heading" className="py-16 lg:py-20">
         <Container>

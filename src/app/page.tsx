@@ -165,12 +165,12 @@ export default async function HomePage() {
               George Town, Bahamas.
             </p>
           </div>
-          <div className="mt-12 grid gap-px overflow-hidden border border-sand-300 bg-sand-300 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-12 grid grid-cols-2 gap-px overflow-hidden border border-sand-300 bg-sand-300 lg:grid-cols-4">
             {differenceCards.map((card, i) => {
               const Icon = card.icon;
               return (
                 <Reveal key={card.title} delay={i * 60} className="h-full">
-                  <article className="group flex h-full flex-col bg-white p-7 transition-colors duration-300 hover:bg-ivory-50 lg:p-8">
+                  <article className="group flex h-full flex-col bg-white p-4 transition-colors duration-300 hover:bg-ivory-50 sm:p-7 lg:p-8">
                     <span className="grid h-11 w-11 place-items-center border border-gold-500/60 text-gold-600 transition-colors duration-300 group-hover:bg-gold-500 group-hover:text-navy-950">
                       <Icon
                         className="h-5 w-5"
@@ -181,7 +181,7 @@ export default async function HomePage() {
                     <h3 className="mt-8 text-[11px] font-semibold uppercase tracking-[0.18em] text-gold-600">
                       {card.title}
                     </h3>
-                    <p className="mt-3 font-display text-2xl leading-tight text-navy-900">
+                    <p className="mt-3 font-display text-xl leading-tight text-navy-900 sm:text-2xl">
                       {card.highlight}
                     </p>
                     <p className="mt-4 text-sm leading-relaxed text-ink-500">

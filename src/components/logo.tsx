@@ -40,7 +40,7 @@ export function Logo({
         height={compact ? 78 : 26}
         priority
         unoptimized
-        className={`shrink-0 rounded-md border border-ivory-50/30 object-contain ${compact ? "h-[78px] w-[78px]" : "h-[26px] w-[42px]"}`}
+        className={`shrink-0 rounded-md border border-ivory-50/30 object-contain ${compact ? "h-[70px] w-[112px]" : "h-[26px] w-[42px]"}`}
       />
       <span className={`flex flex-col leading-none ${compact ? "hidden lg:flex" : ""}`}>
         <span

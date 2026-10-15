@@ -33,14 +33,14 @@ export function Logo({
   return (
     <span className="inline-flex items-center gap-3">
       <Image
-        src="/logo/EYC-logo.png"
+        src="/logo/EYCflag.png"
         alt=""
         aria-hidden="true"
-        width={compact ? 90 : 42}
-        height={compact ? 90 : 42}
+        width={compact ? 126 : 42}
+        height={compact ? 78 : 26}
         priority
         unoptimized
-        className={`shrink-0 rounded-md border border-ivory-50/30 object-cover ${compact ? "h-[90px] w-[90px]" : "h-10 w-10"}`}
+        className={`shrink-0 rounded-md border border-ivory-50/30 object-contain ${compact ? "h-[78px] w-[126px]" : "h-[26px] w-[42px]"}`}
       />
       <span className="flex flex-col leading-none">
         <span

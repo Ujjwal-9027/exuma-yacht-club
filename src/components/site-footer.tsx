@@ -44,10 +44,10 @@ export function SiteFooter() {
           <div className="lg:col-span-4">
             <Link href="/" aria-label="Exuma Yacht Club — home">
               <Image
-                src="/logo/EYC-full-logo.png"
+                src="/logo/EYCflag.png"
                 alt="Exuma Yacht Club — George Town, Bahamas"
                 width={320}
-                height={314}
+                height={197}
                 priority
                 unoptimized
                 className="h-auto w-56 max-w-full rounded-2xl border-2 border-white object-cover"

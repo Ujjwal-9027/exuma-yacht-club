@@ -12,7 +12,7 @@ import {
 } from "@/lib/receipt";
 
 async function loadLogoData(): Promise<string> {
-  const response = await fetch("/logo/EYC-logo.png");
+  const response = await fetch("/logo/EYCflag.png");
   const blob = await response.blob();
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -48,14 +48,14 @@ export function ReceiptActions({ data }: { data: ReceiptData }) {
       const drawHeader = () => {
         pdf.setFillColor(12, 39, 51);
         pdf.rect(0, 0, pageWidth, 128, "F");
-        pdf.addImage(logoData, "PNG", margin, 25, 62, 62);
+        pdf.addImage(logoData, "PNG", margin, 31, 78, 48);
         pdf.setTextColor(255, 255, 255);
         pdf.setFont("helvetica", "bold");
         pdf.setFontSize(18);
-        pdf.text("EXUMA YACHT CLUB", margin + 78, 47);
+        pdf.text("EXUMA YACHT CLUB", margin + 94, 47);
         pdf.setFont("helvetica", "normal");
         pdf.setFontSize(9);
-        pdf.text("George Town · Bahamas", margin + 78, 65);
+        pdf.text("George Town · Bahamas", margin + 94, 65);
         pdf.setFont("helvetica", "bold");
         pdf.setFontSize(10);
         pdf.text("ORDER RECEIPT", right, 43, { align: "right" });

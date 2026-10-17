@@ -16,9 +16,9 @@ export function ProductCard({ product }: { product: Product }) {
   return (
     <Link
       href={`/shop/${product.slug}`}
-      className="group flex flex-col border border-sand-300 bg-white transition-colors hover:border-gold-500"
+      className="lift-card group flex flex-col border border-sand-300 bg-white transition-colors hover:border-gold-500"
     >
-      <div className="img-zoom relative aspect-square border-b border-sand-200 bg-ivory-100">
+      <div className="relative aspect-square border-b border-sand-200 bg-ivory-100">
         <Image
           src={mainImage?.url || product.image}
           alt={mainImage?.alt || product.imageAlt || product.name}
@@ -32,7 +32,7 @@ export function ProductCard({ product }: { product: Product }) {
           </span>
         )}
       </div>
-      <div className="flex flex-1 flex-col gap-1.5 p-5">
+      <div className="flex flex-1 flex-col gap-1.5 px-5 py-5">
         <div className="flex flex-wrap gap-2 text-[10px] font-semibold uppercase tracking-[0.16em]">
           <p className="text-gold-600">{product.category}</p>
           {product.featured && <span className="text-navy-900">Featured</span>}

@@ -1,15 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowRight,
-  Compass,
-  MapPin,
-  Phone,
-  Radio,
-  Ship,
-  ShoppingBag,
-  Waves,
-} from "lucide-react";
+import { ArrowRight, MapPin, Phone, Radio, ShoppingBag } from "lucide-react";
 import { site } from "@/lib/site";
 import { config } from "@/config/site";
 import { getActiveProducts } from "@/lib/products";
@@ -18,39 +9,49 @@ import { Reveal } from "@/components/reveal";
 import { AnchorMark } from "@/components/logo";
 import { getHomepageMerchandise } from "@/lib/product-utils";
 import { HomepageMerchandiseShowcase } from "@/components/homepage-merchandise-showcase";
+import { DifferenceCardGrid } from "@/components/difference-card-grid";
+import { EditorialGallery } from "@/components/editorial-gallery";
 
 export const dynamic = "force-dynamic";
 
 const differenceCards = [
   {
-    icon: AnchorMark,
+    icon: "anchor",
     title: "Room to Dock",
     highlight: "4,000 linear feet of dockage",
     description:
       "Space to accommodate visiting vessels, subject to current marina capacity and restrictions.",
+    detail:
+      "Dockage is confirmed by the marina team according to current capacity and vessel requirements.",
   },
   {
-    icon: Ship,
+    icon: "ship",
     title: "Visiting Vessels",
     highlight: "Vessels up to 120 ft",
     description:
       "Marina accommodation for eligible vessels, subject to berth availability and operational restrictions.",
+    detail:
+      "Berth placement and arrival arrangements are coordinated around availability and operating conditions.",
   },
   {
-    icon: Compass,
+    icon: "compass",
     title: "Elizabeth Harbour",
     highlight: "The Heart of George Town",
     description:
       "Discover the harbour and enjoy convenient access to the surrounding town and island experiences.",
+    detail:
+      "Step ashore close to George Town amenities, with the harbour as your gateway to the island.",
   },
   {
-    icon: Waves,
+    icon: "waves",
     title: "Marina Essentials",
     highlight: "Essential Services",
     description:
       "Shore power, fresh water and fuel services, subject to current availability and operating conditions.",
+    detail:
+      "Ask the dock office about current power, water and fuel availability before arrival.",
   },
-];
+] as const;
 
 const exploreCards = [
   {
@@ -110,7 +111,7 @@ export default async function HomePage() {
           aria-hidden="true"
           className="absolute inset-0 h-full w-full object-cover object-center"
         >
-          <source src="/videos/EYCStocking.mp4" type="video/mp4" />
+          <source src="/videos/EYC-Hero.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-black/5" aria-hidden="true" />
         <div
@@ -165,33 +166,7 @@ export default async function HomePage() {
               George Town, Bahamas.
             </p>
           </div>
-          <div className="mt-12 grid grid-cols-2 gap-px overflow-hidden border border-sand-300 bg-sand-300 lg:grid-cols-4">
-            {differenceCards.map((card, i) => {
-              const Icon = card.icon;
-              return (
-                <Reveal key={card.title} delay={i * 60} className="h-full">
-                  <article className="group flex h-full flex-col bg-white p-4 transition-colors duration-300 hover:bg-ivory-50 sm:p-7 lg:p-8">
-                    <span className="grid h-11 w-11 place-items-center border border-gold-500/60 text-gold-600 transition-colors duration-300 group-hover:bg-gold-500 group-hover:text-navy-950">
-                      <Icon
-                        className="h-5 w-5"
-                        strokeWidth={1.5}
-                        aria-hidden="true"
-                      />
-                    </span>
-                    <h3 className="mt-8 text-[11px] font-semibold uppercase tracking-[0.18em] text-gold-600">
-                      {card.title}
-                    </h3>
-                    <p className="mt-3 font-display text-xl leading-tight text-navy-900 sm:text-2xl">
-                      {card.highlight}
-                    </p>
-                    <p className="mt-4 text-sm leading-relaxed text-ink-500">
-                      {card.description}
-                    </p>
-                  </article>
-                </Reveal>
-              );
-            })}
-          </div>
+          <DifferenceCardGrid cards={differenceCards} />
         </Container>
       </section>
 
@@ -221,9 +196,9 @@ export default async function HomePage() {
           <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {exploreCards.map((card, i) => (
               <Reveal key={card.title} delay={(i % 3) * 80}>
-                <article className="flex h-full flex-col border border-sand-300 bg-white transition-colors hover:border-gold-500">
+                <article className="lift-card flex h-full flex-col border border-sand-300 bg-white transition-[border-color] duration-300 hover:border-gold-500 motion-reduce:transition-none">
                   <Link href={card.href} className="group block">
-                    <div className="img-zoom relative aspect-[4/3] border-b border-sand-200">
+                    <div className="relative aspect-[4/3] border-b border-sand-200">
                       <Image
                         src={card.image}
                         alt={card.imageAlt}
@@ -332,65 +307,10 @@ export default async function HomePage() {
       {/* ── Gallery strip ────────────────────────────────────── */}
       <section aria-labelledby="gallery-heading" className="py-20 lg:py-24">
         <Container>
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-            <SectionHeading
-              overline="Gallery"
-              title="Life on Elizabeth Harbour"
-            />
-            <Reveal delay={120}>
-              <ButtonLink
-                href="/gallery"
-                variant="outline"
-                className="shrink-0"
-              >
-                View the Gallery
-              </ButtonLink>
-            </Reveal>
-          </div>
           <h2 id="gallery-heading" className="sr-only">
             Gallery
           </h2>
-          <div className="mt-12 grid grid-cols-2 gap-4 lg:grid-cols-4">
-            {[
-              {
-                src: "/images/hero-marina-aerial.jpg",
-                alt: "Aerial view of the marina on turquoise water",
-                cls: "aspect-[4/5]",
-              },
-              {
-                src: "/images/marina-docks.jpg",
-                alt: "Yachts moored along the wooden docks at golden hour",
-                cls: "aspect-[4/5] lg:mt-10",
-              },
-              {
-                src: "/images/dining.jpg",
-                alt: "Waterfront restaurant deck at sunset",
-                cls: "aspect-[4/5]",
-              },
-              {
-                src: "/images/stay-room.jpg",
-                alt: "Boutique hotel room with harbour view",
-                cls: "aspect-[4/5] lg:mt-10",
-              },
-            ].map((img, i) => (
-              <Reveal key={img.src} delay={i * 70}>
-                <Link
-                  href="/gallery"
-                  className="img-zoom group relative block overflow-hidden"
-                >
-                  <div className={`relative ${img.cls}`}>
-                    <Image
-                      src={img.src}
-                      alt={img.alt}
-                      fill
-                      sizes="(min-width: 1024px) 25vw, 50vw"
-                      className="object-cover"
-                    />
-                  </div>
-                </Link>
-              </Reveal>
-            ))}
-          </div>
+          <EditorialGallery />
         </Container>
       </section>
 
@@ -438,7 +358,7 @@ export default async function HomePage() {
                   },
                 ].map((item) => (
                   <Reveal key={item.label}>
-                    <div className="flex h-full items-start gap-4 border border-sand-300 bg-white p-5">
+                    <div className="lift-card flex h-full items-start gap-4 rounded-xl border border-sand-300 bg-white p-5">
                       <item.icon
                         className="mt-0.5 h-5 w-5 shrink-0 text-gold-600"
                         strokeWidth={1.6}

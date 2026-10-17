@@ -77,7 +77,7 @@ export function SiteHeader() {
   return (
     <>
       <header
-        className={`${isHome ? "fixed w-full" : "sticky"} top-0 z-50 border-b backdrop-blur-sm transition-all duration-300 ${
+        className={`site-header ${isHome ? "fixed w-full" : "sticky"} isolate top-0 z-50 border-b backdrop-blur-sm transition-all duration-300 ${
           heroHeader
             ? "border-white/30 bg-ivory-50/5"
             : "border-sand-300 bg-white shadow-[0_1px_0_rgba(12,39,51,0.06)]"
@@ -100,7 +100,7 @@ export function SiteHeader() {
                   <Link
                     href={item.href}
                     aria-current={isActive(item.href) ? "page" : undefined}
-                    className={`relative py-2 text-[13px] font-semibold uppercase tracking-[0.14em] transition-colors ${
+                    className={`header-nav-link ${isActive(item.href) ? "is-active" : ""} relative py-2 text-[13px] font-semibold uppercase tracking-[0.14em] transition-colors ${
                       heroHeader
                         ? "text-ivory-50 hover:text-white"
                         : "hover:text-navy-900"
@@ -115,11 +115,7 @@ export function SiteHeader() {
                     }`}
                   >
                     {item.label}
-                    <span
-                      className={`absolute inset-x-0 -bottom-[2px] h-px bg-gold-500 transition-transform duration-300 ${
-                        isActive(item.href) ? "scale-x-100" : "scale-x-0"
-                      }`}
-                    />
+                    <span className="header-nav-underline absolute inset-x-0 -bottom-[2px] h-px bg-gold-500" />
                   </Link>
                 </li>
               ))}
@@ -131,7 +127,7 @@ export function SiteHeader() {
                   aria-expanded={discoverOpen}
                   aria-haspopup="true"
                   onClick={() => setDiscoverOpen((v) => !v)}
-                  className={`relative inline-flex items-center gap-1 py-2 text-[13px] font-semibold uppercase tracking-[0.14em] transition-colors ${
+                  className={`header-plain header-nav-link ${discoverLinks.some((l) => isActive(l.href)) ? "is-active" : ""} relative inline-flex items-center gap-1 py-2 text-[13px] font-semibold uppercase tracking-[0.14em] transition-colors ${
                     heroHeader
                       ? "text-ivory-50 hover:text-white"
                       : "hover:text-navy-900"
@@ -150,16 +146,10 @@ export function SiteHeader() {
                     className={`h-3.5 w-3.5 transition-transform duration-300 ${discoverOpen ? "rotate-180" : ""}`}
                     aria-hidden="true"
                   />
-                  <span
-                    className={`absolute inset-x-0 -bottom-[2px] h-px bg-gold-500 transition-transform duration-300 ${
-                      discoverLinks.some((l) => isActive(l.href))
-                        ? "scale-x-100"
-                        : "scale-x-0"
-                    }`}
-                  />
+                  <span className="header-nav-underline absolute inset-x-0 -bottom-[2px] h-px bg-gold-500" />
                 </button>
                 <ul
-                  className={`absolute right-0 top-full mt-3 w-52 border border-sand-300 bg-white py-2 shadow-[0_18px_40px_rgba(12,39,51,0.12)] transition-all duration-200 ${
+                  className={`absolute right-0 top-full z-[70] mt-3 w-52 border border-sand-300 bg-white py-2 shadow-[0_18px_40px_rgba(12,39,51,0.12)] transition-all duration-200 ${
                     discoverOpen
                       ? "visible translate-y-0 opacity-100"
                       : "invisible -translate-y-1 opacity-0"
@@ -187,7 +177,7 @@ export function SiteHeader() {
                 <Link
                   href="/contact"
                   aria-current={isActive("/contact") ? "page" : undefined}
-                  className={`relative py-2 text-[13px] font-semibold uppercase tracking-[0.14em] transition-colors ${
+                  className={`header-nav-link ${isActive("/contact") ? "is-active" : ""} relative py-2 text-[13px] font-semibold uppercase tracking-[0.14em] transition-colors ${
                     heroHeader
                       ? "text-ivory-50 hover:text-white"
                       : "hover:text-navy-900"
@@ -202,11 +192,7 @@ export function SiteHeader() {
                   }`}
                 >
                   Contact
-                  <span
-                    className={`absolute inset-x-0 -bottom-[2px] h-px bg-gold-500 transition-transform duration-300 ${
-                      isActive("/contact") ? "scale-x-100" : "scale-x-0"
-                    }`}
-                  />
+                  <span className="header-nav-underline absolute inset-x-0 -bottom-[2px] h-px bg-gold-500" />
                 </Link>
               </li>
             </ul>

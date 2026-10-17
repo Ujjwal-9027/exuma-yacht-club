@@ -7,7 +7,7 @@ import type { Product } from "@/db/schema";
 import { Reveal } from "@/components/reveal";
 import {
   getCurrentPriceCents,
-  getMainProductImage,
+  getProductImages,
   isNewArrival,
   type FeaturedProductReason,
 } from "@/lib/product-utils";
@@ -28,6 +28,87 @@ function randomProduct(products: Product[]): Product | null {
   return products.length > 0
     ? products[Math.floor(Math.random() * products.length)]
     : null;
+}
+
+function ProductImageSlideshow({
+  product,
+  badge,
+  large,
+}: {
+  product: Product;
+  badge: string | null;
+  large: boolean;
+}) {
+  const images = getProductImages(product);
+  const fallbackImage = images[0] ?? {
+    id: "fallback",
+    url: product.image,
+    alt: product.imageAlt || product.name,
+    order: 0,
+    isMain: true,
+  };
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+
+  function activateSlideshow() {
+    setIsHovered(true);
+    if (images.length > 1) {
+      setActiveIndex((current) => (current + 1) % images.length);
+    }
+  }
+
+  useEffect(() => {
+    if (
+      images.length <= 1 ||
+      !isHovered ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      return;
+    }
+    const timer = window.setInterval(() => {
+      setActiveIndex((current) => (current + 1) % images.length);
+    }, 3000);
+    return () => window.clearInterval(timer);
+  }, [images.length, isHovered]);
+
+  return (
+    <div
+      onMouseEnter={activateSlideshow}
+      onMouseLeave={() => setIsHovered(false)}
+      onFocus={activateSlideshow}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+          setIsHovered(false);
+        }
+      }}
+      className={`relative overflow-hidden bg-white/5 ${large ? "aspect-[4/5] min-h-0 flex-1 lg:aspect-auto" : "aspect-[4/5]"}`}
+    >
+      {[...images, ...(images.length ? [] : [fallbackImage])].map(
+        (image, index) => (
+          <Image
+            key={image.id}
+            src={image.url}
+            alt={image.alt || product.name}
+            fill
+            sizes={
+              large
+                ? "(min-width: 1024px) 34vw, 100vw"
+                : "(min-width: 1024px) 18vw, (min-width: 640px) 40vw, 50vw"
+            }
+            className={`object-cover transition-opacity duration-700 ease-out motion-reduce:transition-none ${index === activeIndex ? "opacity-100" : "opacity-0"}`}
+            priority={large && index === 0}
+          />
+        ),
+      )}
+      {badge && (
+        <span
+          className={`absolute z-10 bg-navy-950/85 font-semibold uppercase tracking-[0.16em] text-gold-400 ${large ? "left-5 top-5 border border-gold-400/70 px-3 py-2 text-[10px]" : "left-3 top-3 px-2 py-1 text-[9px]"}`}
+        >
+          {badge}
+        </span>
+      )}
+    </div>
+  );
 }
 
 export function HomepageMerchandiseShowcase({
@@ -73,42 +154,14 @@ export function HomepageMerchandiseShowcase({
   }, [supporting, paused]);
 
   function merchandiseCard(product: Product, large = false) {
-    const image = getMainProductImage(product);
     const badge = large ? featuredReason : productBadge(product);
     return (
       <Link
         href={`/shop/${product.slug}`}
-        className={large ? "group flex h-full flex-col" : "group block"}
+        className={`merchandise-card group overflow-hidden rounded-2xl border border-white/15 bg-white/5 transition-[box-shadow,transform,border-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-gold-400/50 hover:shadow-[0_24px_50px_rgba(0,0,0,0.24)] motion-reduce:transition-none motion-reduce:hover:transform-none ${large ? "flex h-full flex-col" : "block"}`}
       >
-        <div
-          className={`img-zoom relative overflow-hidden border border-white/15 bg-white/5 ${large ? "aspect-[4/5] min-h-0 flex-1 lg:aspect-auto" : "aspect-[4/5]"}`}
-        >
-          <Image
-            src={image?.url || product.image}
-            alt={image?.alt || product.imageAlt || product.name}
-            fill
-            sizes={
-              large
-                ? "(min-width: 1024px) 34vw, 100vw"
-                : "(min-width: 1024px) 18vw, (min-width: 640px) 40vw, 50vw"
-            }
-            className="object-cover"
-          />
-          {badge && (
-            <span
-              className={`absolute bg-navy-950/85 font-semibold uppercase tracking-[0.16em] text-gold-400 ${large ? "left-5 top-5 border border-gold-400/70 px-3 py-2 text-[10px]" : "left-3 top-3 px-2 py-1 text-[9px]"}`}
-            >
-              {badge}
-            </span>
-          )}
-        </div>
-        <div
-          className={
-            large
-              ? "border-x border-b border-white/15 px-5 py-5 sm:px-6"
-              : "pt-3"
-          }
-        >
+        <ProductImageSlideshow product={product} badge={badge} large={large} />
+        <div className={large ? "px-5 py-5 sm:px-6" : "px-5 pb-5 pt-4"}>
           {large && (
             <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-gold-400">
               {product.category}

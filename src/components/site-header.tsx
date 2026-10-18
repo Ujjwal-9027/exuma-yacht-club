@@ -37,8 +37,11 @@ export function SiteHeader() {
 
   // Close menus whenever the route changes
   useEffect(() => {
-    setOpen(false);
-    setDiscoverOpen(false);
+    const frame = window.requestAnimationFrame(() => {
+      setOpen(false);
+      setDiscoverOpen(false);
+    });
+    return () => window.cancelAnimationFrame(frame);
   }, [pathname]);
 
   // Close the Discover dropdown on Escape or outside click
@@ -83,11 +86,17 @@ export function SiteHeader() {
             : "border-sand-300 bg-white shadow-[0_1px_0_rgba(12,39,51,0.06)]"
         }`}
       >
-        <div className="mx-auto flex h-[108px] max-w-7xl items-center justify-between gap-2 px-4 sm:gap-4 sm:px-8">
+        <div
+          className={`mx-auto flex max-w-7xl items-center justify-between gap-2 px-4 transition-[height] duration-300 sm:gap-4 sm:px-8 lg:h-[108px] ${
+            scrolled ? "h-[78px]" : "h-[108px]"
+          }`}
+        >
           <Link
             href="/"
             aria-label="Exuma Yacht Club — home"
-            className="shrink-0"
+            className={`origin-left shrink-0 transition-transform duration-300 lg:scale-100 ${
+              scrolled ? "scale-[0.78]" : "scale-100"
+            }`}
           >
             <Logo compact variant={heroHeader ? "light" : "dark"} />
           </Link>
@@ -246,12 +255,16 @@ export function SiteHeader() {
       {/* Mobile navigation */}
       <div
         id="mobile-menu"
-        className={`fixed inset-x-0 top-[108px] z-[60] max-h-[calc(100dvh-108px)] overflow-y-auto overscroll-contain border-t border-sand-300 bg-white shadow-[0_18px_40px_rgba(12,39,51,0.16)] transition-[transform,opacity] duration-300 ease-out lg:hidden ${
+        className={`fixed inset-x-0 z-[60] overflow-y-auto overscroll-contain border-t border-sand-300 bg-white shadow-[0_18px_40px_rgba(12,39,51,0.16)] transition-[top,max-height,transform,opacity] duration-300 ease-out lg:hidden ${
+          scrolled
+            ? "top-[78px] max-h-[calc(100dvh-78px)]"
+            : "top-[108px] max-h-[calc(100dvh-108px)]"
+        } ${
           open
             ? "translate-x-0 opacity-100"
             : "pointer-events-none translate-x-full opacity-0"
         }`}
-        style={{ maxHeight: "calc(100dvh - 108px)", zIndex: 60 }}
+        style={{ zIndex: 60 }}
       >
         <nav aria-label="Mobile" className="min-h-full px-6 pb-10 pt-6">
           <ul className="divide-y divide-sand-200">

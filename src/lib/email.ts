@@ -21,6 +21,7 @@ export type EmailMessage = {
   to: string;
   subject: string;
   html: string;
+  text?: string;
   replyTo?: string;
 };
 
@@ -47,6 +48,7 @@ const resendProvider: EmailProvider = {
         to: message.to,
         subject: message.subject,
         html: message.html,
+        text: message.text,
         reply_to: message.replyTo,
       }),
     });
@@ -85,6 +87,7 @@ const smtpProvider: EmailProvider = {
       from: process.env.EMAIL_FROM,
       to: message.to,
       subject: message.subject,
+      text: message.text,
       html: message.html,
       replyTo: message.replyTo,
     });
@@ -102,7 +105,7 @@ let warned = false;
 /** Fire-and-log email send. Never throws — notifications must not break requests. */
 export async function sendNotification(message: EmailMessage): Promise<void> {
   const provider = getEmailProvider();
-  const target = process.env.NOTIFY_EMAIL;
+  const target = message.to;
   if (!provider.configured || !target) {
     if (!warned) {
       console.warn(

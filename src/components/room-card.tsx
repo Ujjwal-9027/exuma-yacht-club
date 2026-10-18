@@ -3,9 +3,14 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import type { Room } from "@/data/rooms";
 import { ConfiguredBookingLink } from "@/components/configured-link";
-import { config } from "@/config/site";
 
-export function RoomCard({ room }: { room: Room }) {
+export function RoomCard({
+  room,
+  bookingUrl,
+}: {
+  room: Room;
+  bookingUrl: string;
+}) {
   return (
     <article className="flex h-full flex-col border border-sand-300 bg-white transition-colors hover:border-gold-500">
       <div className="img-zoom relative aspect-[3/2] border-b border-sand-200 bg-ivory-100">
@@ -31,7 +36,7 @@ export function RoomCard({ room }: { room: Room }) {
             <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
           </Link>
           <ConfiguredBookingLink
-            url={config.resnexusBookingUrl}
+            url={bookingUrl}
             label="Book Now"
             className="sm:ml-auto"
           />

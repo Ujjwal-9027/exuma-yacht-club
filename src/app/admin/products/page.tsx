@@ -35,7 +35,7 @@ export default async function AdminProductsPage({
             id="product-search"
             name="q"
             defaultValue={query}
-            placeholder="Search name, slug, or SKU"
+            placeholder="Search name, price, slug, or SKU"
             className="field"
           />
           <button

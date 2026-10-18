@@ -39,7 +39,7 @@ export const faqItems: FaqItem[] = [
   {
     question: "Can I order gift shop items online?",
     answer:
-      "Yes. Add items to your cart and check out — no online payment is taken. Choose Collect at the dock to pick up at the marina gift shop, or Ship to have the team quote shipping separately.",
+      "Yes. Add items to your cart, complete payment securely with PayPal or debit or credit card, and choose delivery or collection at the marina gift shop.",
   },
   {
     question: "Is the club close to town and provisioning?",

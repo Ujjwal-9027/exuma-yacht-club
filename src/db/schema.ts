@@ -71,6 +71,21 @@ export type Product = {
   updatedAt?: Date;
 };
 
+export type InquiryStatus =
+  | "new"
+  | "read"
+  | "in_progress"
+  | "replied"
+  | "confirmed"
+  | "declined"
+  | "archived";
+
+export type InquiryNote = {
+  id: string;
+  text: string;
+  createdAt: Date;
+};
+
 export type Inquiry = {
   id: number;
   type: string;
@@ -86,6 +101,9 @@ export type Inquiry = {
   partySize: string | null;
   message: string | null;
   handled: boolean;
+  status?: InquiryStatus;
+  readAt?: Date | null;
+  internalNotes?: InquiryNote[];
   createdAt: Date;
 };
 
@@ -124,6 +142,24 @@ export type ShippingAddress = {
   country: string;
 };
 
+export type OrderStatusEmailStatus =
+  | "pending"
+  | "processing"
+  | "ready"
+  | "shipped"
+  | "delivered"
+  | "fulfilled"
+  | "cancelled";
+
+export type OrderStatusEmailTemplate = {
+  subject: string;
+  body: string;
+};
+
+export type OrderStatusEmailTemplates = Partial<
+  Record<OrderStatusEmailStatus, OrderStatusEmailTemplate>
+>;
+
 export type SiteSettings = {
   id: "site";
   businessName: string;
@@ -135,5 +171,19 @@ export type SiteSettings = {
   seoDescription: string;
   homeHeroTitle: string;
   homeHeroLede: string;
+  addressStreet?: string;
+  addressLocality?: string;
+  addressCountry?: string;
+  addressPoBox?: string;
+  marinaPhone?: string;
+  restaurantPhone?: string;
+  whatsappLabel?: string;
+  vhfChannel?: string;
+  googleMapsUrl?: string;
+  socialFacebook?: string;
+  socialInstagram?: string;
+  inquiryNotificationEmail?: string;
+  orderNotificationEmail?: string;
+  orderStatusEmailTemplates?: OrderStatusEmailTemplates;
   updatedAt: Date;
 };

@@ -9,8 +9,13 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function AdminSettingsPage() {
+export default async function AdminSettingsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ saved?: string }>;
+}) {
   const settings = await getManagedSiteSettings();
+  const params = await searchParams;
   return (
     <AdminShell title="Website settings">
       <div className="mb-6 max-w-2xl">
@@ -20,6 +25,14 @@ export default async function AdminSettingsPage() {
           revalidated after saving.
         </p>
       </div>
+      {params.saved === "1" && (
+        <p
+          role="status"
+          className="mb-6 border border-green-700/30 bg-green-50 p-4 text-sm text-green-900"
+        >
+          Settings saved.
+        </p>
+      )}
       <SettingsForm values={settings} />
     </AdminShell>
   );

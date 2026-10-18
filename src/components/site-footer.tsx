@@ -2,13 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Mail, MapPin, Phone, Radio } from "lucide-react";
 import { site } from "@/lib/site";
-import { config, isPlaceholder } from "@/config/site";
-
-const socialLinks = [
-  { label: "Facebook", href: config.social.facebook },
-  { label: "Instagram", href: config.social.instagram },
-  { label: "Tripadvisor", href: config.social.tripadvisor },
-];
+import type { PublicContactSettings } from "@/lib/managed-site";
 
 const serviceLinks = [
   { label: "Marina & Dockage", href: "/marina" },
@@ -35,13 +29,44 @@ const policyLinks = [
   { label: "Booking & Cancellation", href: "/booking-cancellation" },
 ];
 
-export function SiteFooter() {
+function FacebookIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M13.5 21v-8h2.75l.5-3H13.5V8.1c0-.87.29-1.6 1.64-1.6h1.76V3.82c-.3-.04-1.34-.13-2.55-.13-2.52 0-4.25 1.54-4.25 4.38V10H7.25v3h2.85v8h3.4Z" />
+    </svg>
+  );
+}
+
+function InstagramIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      aria-hidden="true"
+    >
+      <rect x="3.5" y="3.5" width="17" height="17" rx="4.5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.4" cy="6.7" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+export function SiteFooter({
+  contactSettings,
+}: {
+  contactSettings: PublicContactSettings;
+}) {
+  const whatsappHref = contactSettings.whatsappNumber
+    ? `https://wa.me/${contactSettings.whatsappNumber}`
+    : null;
   return (
     <footer className="bg-navy-950 text-ivory-100">
-      <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:py-20">
-        <div className="grid gap-12 lg:grid-cols-12">
+      <div className="mx-auto max-w-7xl px-5 py-12 sm:px-8 lg:py-16">
+        <div className="grid grid-cols-2 gap-8 lg:grid-cols-12 lg:gap-10">
           {/* Brand */}
-          <div className="lg:col-span-4">
+          <div className="col-span-2 lg:col-span-4">
             <Link href="/" aria-label="Exuma Yacht Club — home">
               <Image
                 src="/logo/EYCflag.png"
@@ -50,17 +75,48 @@ export function SiteFooter() {
                 height={197}
                 priority
                 unoptimized
-                className="h-auto w-56 max-w-full rounded-2xl border-2 border-white object-cover"
+                className="h-auto w-44 max-w-full rounded-xl border-2 border-white object-cover"
               />
             </Link>
-            <p className="mt-6 max-w-sm text-sm leading-relaxed text-ivory-100/70">
+            <p className="mt-4 max-w-sm text-sm leading-relaxed text-ivory-100/70">
               A boutique marina and hotel on Elizabeth Harbour in George Town,
               Great Exuma — dockage, fuel, island stays, waterfront dining and a
               gift shop, all on the water&apos;s edge.
             </p>
-            <p className="mt-6 font-display text-sm tracking-[0.08em] text-gold-400">
+            <p className="mt-4 font-display text-sm tracking-[0.08em] text-gold-400">
               {site.coordinates.display}
             </p>
+            {(contactSettings.socialFacebook ||
+              contactSettings.socialInstagram) && (
+              <ul className="mt-5 flex flex-wrap gap-2">
+                {contactSettings.socialFacebook && (
+                  <li>
+                    <a
+                      href={contactSettings.socialFacebook}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Facebook"
+                      className="group grid h-8 w-8 place-items-center rounded-full border border-ivory-100/30 text-ivory-50 transition-[border-color,color,transform,box-shadow] duration-[400ms] ease-out hover:-translate-y-1 hover:border-[#1877F2] hover:text-[#1877F2] hover:shadow-[0_8px_16px_rgba(24,119,242,0.25)] hover:[transform:perspective(500px)_rotateX(12deg)_rotateY(-10deg)_scale(1.08)] motion-reduce:transition-none"
+                    >
+                      <FacebookIcon />
+                    </a>
+                  </li>
+                )}
+                {contactSettings.socialInstagram && (
+                  <li>
+                    <a
+                      href={contactSettings.socialInstagram}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Instagram"
+                      className="group grid h-8 w-8 place-items-center rounded-full border border-ivory-100/30 text-ivory-50 transition-[border-color,color,transform,box-shadow] duration-[400ms] ease-out hover:-translate-y-1 hover:border-[#E4405F] hover:text-[#E4405F] hover:shadow-[0_8px_16px_rgba(228,64,95,0.25)] hover:[transform:perspective(500px)_rotateX(12deg)_rotateY(10deg)_scale(1.08)] motion-reduce:transition-none"
+                    >
+                      <InstagramIcon />
+                    </a>
+                  </li>
+                )}
+              </ul>
+            )}
           </div>
 
           {/* Explore */}
@@ -68,7 +124,7 @@ export function SiteFooter() {
             <h2 className="text-[11px] font-semibold uppercase tracking-[0.22em] text-gold-400">
               Explore
             </h2>
-            <ul className="mt-5 space-y-3 text-sm">
+            <ul className="mt-4 space-y-2 text-sm">
               {exploreLinks.map((item) => (
                 <li key={item.href}>
                   <Link
@@ -87,7 +143,7 @@ export function SiteFooter() {
             <h2 className="text-[11px] font-semibold uppercase tracking-[0.22em] text-gold-400">
               Services
             </h2>
-            <ul className="mt-5 space-y-3 text-sm">
+            <ul className="mt-4 space-y-2 text-sm">
               {serviceLinks.map((item) => (
                 <li key={item.href}>
                   <Link
@@ -102,11 +158,11 @@ export function SiteFooter() {
           </nav>
 
           {/* Contact */}
-          <div className="lg:col-span-3">
+          <div className="col-span-2 lg:col-span-3">
             <h2 className="text-[11px] font-semibold uppercase tracking-[0.22em] text-gold-400">
               Visit & Contact
             </h2>
-            <ul className="mt-5 space-y-4 text-sm">
+            <ul className="mt-4 space-y-3 text-sm">
               <li className="flex gap-3">
                 <MapPin
                   className="mt-0.5 h-4 w-4 shrink-0 text-gold-400"
@@ -114,9 +170,10 @@ export function SiteFooter() {
                   aria-hidden="true"
                 />
                 <span className="text-ivory-100/75">
-                  {site.address.street}, {site.address.locality}
+                  {contactSettings.addressStreet},{" "}
+                  {contactSettings.addressLocality}
                   <br />
-                  {site.address.country}
+                  {contactSettings.addressCountry}
                 </span>
               </li>
               <li className="flex gap-3">
@@ -127,13 +184,13 @@ export function SiteFooter() {
                 />
                 <span>
                   <a
-                    href={site.phone.href}
+                    href={`tel:${contactSettings.marinaPhone.replace(/[^0-9+]/g, "")}`}
                     className="text-ivory-100/75 transition-colors hover:text-gold-400"
                   >
-                    {site.phone.label}
+                    {contactSettings.marinaPhone}
                   </a>
                   <span className="block text-xs text-ivory-100/50">
-                    {site.phone.note}
+                    Marina & dock office
                   </span>
                 </span>
               </li>
@@ -144,14 +201,16 @@ export function SiteFooter() {
                   aria-hidden="true"
                 />
                 <span>
-                  <a
-                    href={site.whatsapp.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-ivory-100/75 transition-colors hover:text-gold-400"
-                  >
-                    {site.whatsapp.label}
-                  </a>
+                  {whatsappHref && (
+                    <a
+                      href={whatsappHref}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-ivory-100/75 transition-colors hover:text-gold-400"
+                    >
+                      {contactSettings.whatsappLabel}
+                    </a>
+                  )}
                   <span className="block text-xs text-ivory-100/50">
                     WhatsApp
                   </span>
@@ -163,35 +222,29 @@ export function SiteFooter() {
                   strokeWidth={1.6}
                   aria-hidden="true"
                 />
-                <span className="text-ivory-100/75">{site.vhf}</span>
+                <span className="text-ivory-100/75">
+                  {contactSettings.vhfChannel}
+                </span>
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="mt-14 flex flex-col gap-4 border-t border-ivory-100/10 pt-8 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-10 flex flex-col gap-3 border-t border-ivory-100/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs text-ivory-100/50">
             © {new Date().getFullYear()} {site.name}. All rights reserved.
           </p>
-          {/* Social links render only when configured in src/config/site.ts */}
-          {socialLinks.some((s) => !isPlaceholder(s.href)) && (
-            <ul className="flex flex-wrap gap-x-5 gap-y-2 text-xs">
-              {socialLinks
-                .filter((s) => !isPlaceholder(s.href))
-                .map((s) => (
-                  <li key={s.label}>
-                    <a
-                      href={s.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-ivory-100/70 transition-colors hover:text-gold-400"
-                    >
-                      {s.label}
-                    </a>
-                  </li>
-                ))}
-            </ul>
-          )}
+          <p className="text-xs text-ivory-100/50">
+            Designed &amp; developed by{" "}
+            <a
+              href="https://infycrestsolutions.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-ivory-100/70 underline decoration-gold-400/70 underline-offset-4 transition-colors hover:text-gold-400"
+            >
+              Infycrest Solutions
+            </a>
+          </p>
           <ul className="flex flex-wrap gap-x-6 gap-y-2 text-xs">
             {policyLinks.map((item) => (
               <li key={item.href}>

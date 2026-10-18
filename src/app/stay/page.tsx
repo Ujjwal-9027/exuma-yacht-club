@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { BedDouble, MapPin, UtensilsCrossed, Waves } from "lucide-react";
 import { site } from "@/lib/site";
-import { config } from "@/config/site";
-import { rooms } from "@/data/rooms";
 import {
   ButtonLink,
   Container,
@@ -11,8 +9,7 @@ import {
   SectionHeading,
 } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
-import { RoomCard } from "@/components/room-card";
-import { ConfiguredBookingLink } from "@/components/configured-link";
+import { getManagedSiteSettings } from "@/lib/managed-site";
 
 export const metadata: Metadata = {
   title: "Stay — Boutique Hotel",
@@ -72,6 +69,7 @@ const lodgingJsonLd = {
 };
 
 export default async function StayPage() {
+  const settings = await getManagedSiteSettings();
   return (
     <>
       <script
@@ -85,40 +83,6 @@ export default async function StayPage() {
         image="/images/stay-room.jpg"
         imageAlt="Temporary accommodation image — room-specific photography pending approval"
       />
-
-      {/* Rooms list */}
-      <section
-        aria-labelledby="rooms-heading"
-        className="border-b border-sand-200 py-20 lg:py-24"
-      >
-        <Container>
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-            <SectionHeading
-              overline="Rooms & Suites"
-              title="Choose your room"
-              lede="Choose from the rooms and suites currently listed by ResNexus. Availability and rates are shown in the secure booking system."
-            />
-            <Reveal delay={120}>
-              <ConfiguredBookingLink
-                url={config.resnexusBookingUrl}
-                label="Book Now"
-                fallbackHref="/contact"
-                className="shrink-0"
-              />
-            </Reveal>
-          </div>
-          <h2 id="rooms-heading" className="sr-only">
-            Rooms and suites
-          </h2>
-          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {rooms.map((room, i) => (
-              <Reveal key={room.slug} delay={(i % 3) * 80}>
-                <RoomCard room={room} />
-              </Reveal>
-            ))}
-          </div>
-        </Container>
-      </section>
 
       {/* Intro + highlights */}
       <section aria-labelledby="stay-highlights" className="py-20 lg:py-24">
@@ -221,7 +185,7 @@ export default async function StayPage() {
             <Reveal delay={120} className="mt-8">
               <div className="flex flex-col items-start gap-3 sm:flex-row">
                 <ButtonLink
-                  href={config.resnexusBookingUrl}
+                  href={settings.resnexusBookingUrl}
                   variant="gold"
                   external
                 >

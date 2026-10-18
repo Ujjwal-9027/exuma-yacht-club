@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { AdminShell } from "@/components/admin-shell";
 import { updateOrderStatus } from "@/app/admin/actions";
 import { formatDate, formatMoney } from "@/lib/format";
+import { OrderFilters } from "./order-filters";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -67,70 +68,11 @@ export default async function AdminOrdersPage({
 
   return (
     <AdminShell title="Orders">
-      <div className="mb-6 flex flex-wrap gap-3">
-        <form
-          className="flex min-w-[min(100%,24rem)] flex-1 gap-2"
-          role="search"
-        >
-          <label htmlFor="order-search" className="sr-only">
-            Search orders
-          </label>
-          <input
-            id="order-search"
-            name="q"
-            defaultValue={query}
-            placeholder="Search order, customer, or email"
-            className="field"
-          />
-          <button
-            type="submit"
-            className="border border-navy-900 px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-navy-900 hover:bg-navy-900 hover:text-ivory-50"
-          >
-            Search
-          </button>
-        </form>
-        <select
-          name="status"
-          defaultValue={status}
-          form="order-filters"
-          className="field max-w-[12rem]"
-        >
-          <option value="">All fulfilment</option>
-          {STATUSES.map((value) => (
-            <option key={value} value={value}>
-              {value}
-            </option>
-          ))}
-        </select>
-        <form id="order-filters" className="contents">
-          <input type="hidden" name="q" value={query} />
-          <label className="sr-only" htmlFor="payment-filter">
-            Payment status
-          </label>
-          <select
-            id="payment-filter"
-            name="payment"
-            defaultValue={payment}
-            className="field max-w-[12rem]"
-          >
-            <option value="">All payment</option>
-            {["unpaid", "pending", "paid", "failed", "refunded"].map(
-              (value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ),
-            )}
-          </select>
-          <button
-            type="submit"
-            form="order-filters"
-            className="border border-sand-300 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-navy-900 hover:border-navy-900"
-          >
-            Filter
-          </button>
-        </form>
-      </div>
+      <OrderFilters
+        initialQuery={query}
+        initialStatus={status ?? ""}
+        initialPayment={payment ?? ""}
+      />
       {rows.length === 0 ? (
         <p className="border border-sand-300 bg-white p-8 text-sm text-ink-500">
           No orders yet. Orders placed in the gift shop appear here.

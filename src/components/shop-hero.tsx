@@ -55,12 +55,13 @@ export function ShopHero() {
         <p className="overline-label !text-gold-400">
           Merchandise &amp; Gift Shop
         </p>
-        <h1 className="mt-4 max-w-3xl font-display text-4xl leading-[1.08] font-medium text-ivory-50 sm:text-5xl lg:text-6xl">
+        <h1 className="mt-4 max-w-3xl font-display text-3xl leading-[1.08] font-medium text-ivory-50 sm:text-5xl lg:text-6xl">
           The club collection
         </h1>
         <p className="mt-5 max-w-2xl text-base leading-relaxed text-ivory-100/80 sm:text-lg">
-          Club apparel and island essentials. Place your order online and
-          collect it at the marina gift shop — payment is taken at pickup.
+          Club apparel and island essentials. Place your order online and pay
+          securely with PayPal or debit or credit card. Choose delivery or
+          collect your order at the marina gift shop.
         </p>
       </Container>
     </section>

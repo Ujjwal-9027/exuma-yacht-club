@@ -123,7 +123,7 @@ export default async function HomePage() {
             <p className="overline-label !text-gold-400">
               GEORGE TOWN · GREAT EXUMA · THE BAHAMAS
             </p>
-            <h1 className="mt-5 max-w-2xl font-display text-5xl leading-[1.04] font-medium text-ivory-50 sm:text-6xl lg:text-8xl">
+            <h1 className="mt-5 max-w-2xl font-display text-4xl leading-[1.04] font-medium text-ivory-50 sm:text-6xl lg:text-8xl">
               Your Exuma escape starts here.
             </h1>
             <p className="mt-6 max-w-xl text-base leading-relaxed text-ivory-100/90 sm:text-lg">

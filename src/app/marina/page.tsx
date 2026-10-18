@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { Check, LifeBuoy, MapPin, Phone, Radio } from "lucide-react";
+import { Check, LifeBuoy, Phone } from "lucide-react";
 import { site } from "@/lib/site";
 import { marinaRates } from "@/data/marinaRates";
 import { marinaAmenities } from "@/data/marinaAmenities";
 import { Container, SectionHeading } from "@/components/ui";
 import { MarinaHero } from "@/components/marina-hero";
 import { Reveal } from "@/components/reveal";
+import { DifferenceCardGrid } from "@/components/difference-card-grid";
 import { ConfiguredBookingLink } from "@/components/configured-link";
 import { getManagedSiteSettings } from "@/lib/managed-site";
 
@@ -25,15 +26,110 @@ export const metadata: Metadata = {
 };
 
 const facts = [
-  { label: "Max vessel length", value: "Up to 120 ft LOA" },
-  { label: "Depth alongside", value: "Approx. 7 ft at high water" },
-  { label: "Dockage", value: "± 4,000 linear feet" },
-  { label: "Protection", value: "Breakwater-sheltered harbour" },
-  { label: "Shore services", value: "Power & fresh water" },
-  { label: "Fuel pier", value: "Gas & diesel" },
-  { label: "Dock office", value: "VHF Channel 16" },
-  { label: "Position", value: site.coordinates.display },
-];
+  {
+    icon: "anchor",
+    title: "Max vessel length",
+    highlight: "Up to 120 ft LOA",
+    description: "Vessels up to 120 ft LOA.",
+    detail: "Contact the dock office for vessel-specific arrival arrangements.",
+  },
+  {
+    icon: "ship",
+    title: "Depth alongside",
+    highlight: "Approx. 7 ft at high water",
+    description: "Approx. 7 ft at high water.",
+    detail:
+      "Confirm conditions for your vessel with the dock office before arrival.",
+  },
+  {
+    icon: "compass",
+    title: "Dockage",
+    highlight: "± 4,000 linear feet",
+    description: "Approximately 4,000 linear feet of dockage.",
+    detail: "Dockage depends on vessel size, length of stay and season.",
+  },
+  {
+    icon: "waves",
+    title: "Protection",
+    highlight: "Breakwater-sheltered harbour",
+    description: "Breakwater-sheltered harbour.",
+    detail:
+      "Contact the dock office for current harbour and arrival conditions.",
+  },
+  {
+    icon: "anchor",
+    title: "Shore services",
+    highlight: "Power & fresh water",
+    description: "Power and fresh water.",
+    detail: "Availability and arrangements are confirmed by the dock office.",
+  },
+  {
+    icon: "ship",
+    title: "Fuel pier",
+    highlight: "Gas & diesel",
+    description: "Gas and diesel.",
+    detail: "Contact the dock office to confirm current fuel availability.",
+  },
+  {
+    icon: "compass",
+    title: "Dock office",
+    highlight: "VHF Channel 16",
+    description: "VHF Channel 16.",
+    detail: "Hail the dock office on VHF Channel 16 as you approach.",
+  },
+  {
+    icon: "waves",
+    title: "Position",
+    highlight: site.coordinates.display,
+    description: site.coordinates.display,
+    detail: "The marina is on the George Town waterfront in Elizabeth Harbour.",
+  },
+] as const;
+
+const facilityCards = [
+  {
+    icon: "anchor",
+    title: "Dockage & vessel accommodation",
+    highlight: "Dockage on Elizabeth Harbour",
+    description:
+      "Dockage on Elizabeth Harbour for vessels up to 120 ft LOA, with approximately 4,000 linear feet of published dockage and breakwater protection.",
+    detail:
+      "Vessel accommodation and dockage are confirmed by the marina team according to current availability.",
+  },
+  {
+    icon: "ship",
+    title: "Shore services",
+    highlight: "Power & fresh water",
+    description:
+      "Power and fresh water are available as published shore services. Specific arrangements are confirmed directly by the dock office.",
+    detail:
+      "Contact the dock office to confirm service arrangements for your vessel.",
+  },
+  {
+    icon: "waves",
+    title: "Fuel pier",
+    highlight: "Gas & diesel",
+    description:
+      "Gas and diesel are available at the fuel pier. Contact the dock office for current availability before you arrive.",
+    detail:
+      "Fuel availability should be confirmed with the dock office before arrival.",
+  },
+  {
+    icon: "compass",
+    title: "George Town access",
+    highlight: "Queen's Highway waterfront",
+    description:
+      "The marina is on Queen's Highway in George Town, with grocery and liquor stores directly across the street according to the published site information.",
+    detail:
+      "The waterfront location keeps town amenities close during your stay.",
+  },
+] as const;
+
+const amenityGroups = [
+  { title: "On the water", items: marinaAmenities.slice(0, 5) },
+  { title: "Ashore", items: marinaAmenities.slice(5, 13) },
+  { title: "Island life", items: marinaAmenities.slice(13) },
+] as const;
 
 export default async function MarinaPage() {
   const settings = await getManagedSiteSettings();
@@ -52,20 +148,7 @@ export default async function MarinaPage() {
           <h2 id="marina-facts" className="sr-only">
             Marina facts
           </h2>
-          <dl className="mt-12 grid gap-px overflow-hidden border border-sand-200 bg-sand-200 sm:grid-cols-2 lg:grid-cols-4">
-            {facts.map((fact, i) => (
-              <Reveal key={fact.label} delay={(i % 4) * 60}>
-                <div className="flex h-full flex-col gap-2 bg-white p-6">
-                  <dt className="text-[10px] font-semibold uppercase tracking-[0.22em] text-gold-600">
-                    {fact.label}
-                  </dt>
-                  <dd className="font-display text-lg leading-snug text-navy-900">
-                    {fact.value}
-                  </dd>
-                </div>
-              </Reveal>
-            ))}
-          </dl>
+          <DifferenceCardGrid cards={facts} layout="grid" />
 
           <Reveal className="mt-8">
             <div className="flex items-start gap-4 border border-sand-300 bg-ivory-100 p-6">
@@ -141,60 +224,16 @@ export default async function MarinaPage() {
         className="border-y border-sand-200 bg-ivory-100 py-20 lg:py-24"
       >
         <Container>
-          <div className="grid items-start gap-12 lg:grid-cols-5">
-            <div>
-              <SectionHeading
-                overline="Marina Facilities"
-                title="Everything you need at the water's edge"
-                lede="The marina sits in the heart of George Town on Elizabeth Harbour, with published dockage and shore services close to the town amenities you need during your stay."
-              />
-              <h2 id="facilities-heading" className="sr-only">
-                Marina facilities
-              </h2>
-            </div>
-            <div className="grid gap-px border border-sand-300 bg-sand-300 sm:grid-cols-2 lg:col-span-4">
-              {[
-                {
-                  title: "Dockage & vessel accommodation",
-                  text: "Dockage on Elizabeth Harbour for vessels up to 120 ft LOA, with approximately 4,000 linear feet of published dockage and breakwater protection.",
-                  icon: LifeBuoy,
-                },
-                {
-                  title: "Shore services",
-                  text: "Power and fresh water are available as published shore services. Specific arrangements are confirmed directly by the dock office.",
-                  icon: Radio,
-                },
-                {
-                  title: "Fuel pier",
-                  text: "Gas and diesel are available at the fuel pier. Contact the dock office for current availability before you arrive.",
-                  icon: Phone,
-                },
-                {
-                  title: "George Town access",
-                  text: "The marina is on Queen's Highway in George Town, with grocery and liquor stores directly across the street according to the published site information.",
-                  icon: MapPin,
-                },
-              ].map((facility, index) => {
-                const Icon = facility.icon;
-                return (
-                  <Reveal key={facility.title} delay={index * 60}>
-                    <article className="h-full bg-white p-7 lg:p-8">
-                      <Icon
-                        className="h-5 w-5 text-gold-600"
-                        strokeWidth={1.6}
-                        aria-hidden="true"
-                      />
-                      <h3 className="mt-6 font-display text-xl text-navy-900">
-                        {facility.title}
-                      </h3>
-                      <p className="mt-3 text-sm leading-relaxed text-ink-500">
-                        {facility.text}
-                      </p>
-                    </article>
-                  </Reveal>
-                );
-              })}
-            </div>
+          <div>
+            <SectionHeading
+              overline="Marina Facilities"
+              title="Everything you need at the water's edge"
+              lede="The marina sits in the heart of George Town on Elizabeth Harbour, with published dockage and shore services close to the town amenities you need during your stay."
+            />
+            <h2 id="facilities-heading" className="sr-only">
+              Marina facilities
+            </h2>
+            <DifferenceCardGrid cards={facilityCards} layout="grid" />
           </div>
         </Container>
       </section>
@@ -210,23 +249,46 @@ export default async function MarinaPage() {
           <h2 id="amenities-heading" className="sr-only">
             Marina amenities
           </h2>
-          <dl className="mt-12 grid gap-px overflow-hidden border border-sand-300 bg-sand-300 sm:grid-cols-2">
-            {marinaAmenities.map(([label, status], index) => (
-              <Reveal key={label} delay={(index % 2) * 50}>
-                <div className="flex min-h-16 items-center justify-between gap-5 bg-white px-5 py-4 sm:px-6">
-                  <dt className="text-sm font-medium text-navy-900">{label}</dt>
-                  <dd className="flex shrink-0 items-center gap-2 text-right text-[11px] font-semibold uppercase tracking-[0.12em] text-gold-600">
-                    <Check
-                      className="h-4 w-4"
-                      strokeWidth={2}
-                      aria-hidden="true"
-                    />
-                    {status}
-                  </dd>
+          <div className="mt-12 grid gap-10 lg:grid-cols-3 lg:gap-8">
+            {amenityGroups.map((group, groupIndex) => (
+              <Reveal key={group.title} delay={groupIndex * 80}>
+                <div className="border-t-2 border-navy-900">
+                  <div className="flex items-end justify-between gap-4 py-5">
+                    <h3 className="font-display text-2xl text-navy-900">
+                      {group.title}
+                    </h3>
+                    <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold-600">
+                      {String(groupIndex + 1).padStart(2, "0")}
+                    </span>
+                  </div>
+                  <dl className="border-y border-sand-300">
+                    {group.items.map(([label, status], itemIndex) => (
+                      <div
+                        key={label}
+                        tabIndex={0}
+                        className="group relative isolate flex min-h-16 items-center gap-4 border-b border-sand-200 bg-white px-1 py-4 outline-none [perspective:1000px] [transform-style:preserve-3d] transition-[background-color,box-shadow,transform] duration-300 last:border-b-0 hover:-translate-y-1 hover:bg-ivory-100 hover:shadow-[0_12px_20px_rgba(12,39,51,0.12)] hover:[transform:rotateX(1deg)_rotateY(-1deg)] focus-visible:-translate-y-1 focus-visible:bg-ivory-100 focus-visible:shadow-[0_12px_20px_rgba(12,39,51,0.12)] focus-visible:[transform:rotateX(1deg)_rotateY(-1deg)] motion-reduce:transition-none motion-reduce:hover:transform-none"
+                      >
+                        <span className="w-6 shrink-0 text-xs text-ink-400 transition-transform duration-300 group-hover:translate-x-1">
+                          {String(itemIndex + 1).padStart(2, "0")}
+                        </span>
+                        <dt className="min-w-0 flex-1 text-sm font-medium text-navy-900">
+                          {label}
+                        </dt>
+                        <dd className="flex shrink-0 items-center gap-1.5 text-right text-[10px] font-semibold uppercase tracking-[0.12em] text-gold-600">
+                          <Check
+                            className="h-3.5 w-3.5"
+                            strokeWidth={2}
+                            aria-hidden="true"
+                          />
+                          {status}
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
                 </div>
               </Reveal>
             ))}
-          </dl>
+          </div>
         </Container>
       </section>
 

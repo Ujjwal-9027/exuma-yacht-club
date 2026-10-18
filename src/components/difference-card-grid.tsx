@@ -22,14 +22,20 @@ type DifferenceCard = {
 
 export function DifferenceCardGrid({
   cards,
+  layout = "featured",
 }: {
   cards: readonly DifferenceCard[];
+  layout?: "featured" | "grid";
 }) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   return (
     <div
-      className="mt-12 grid grid-cols-1 items-stretch gap-4 sm:grid-cols-2 lg:flex lg:h-[380px] lg:gap-3"
+      className={`mt-12 grid grid-cols-2 items-stretch gap-4 sm:grid-cols-2 ${
+        layout === "featured"
+          ? "lg:flex lg:h-[380px] lg:gap-3"
+          : "lg:grid-cols-4"
+      }`}
       onMouseLeave={() => setActiveIndex(null)}
     >
       {cards.map((card, index) => {

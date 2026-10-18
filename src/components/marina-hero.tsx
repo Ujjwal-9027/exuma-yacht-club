@@ -20,12 +20,24 @@ const images = [
 
 export function MarinaHero({ dockwaUrl }: { dockwaUrl: string }) {
   const [activeImage, setActiveImage] = useState(0);
+  const [bottomBookingVisible, setBottomBookingVisible] = useState(false);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
       setActiveImage((current) => (current + 1) % images.length);
     }, 5000);
     return () => window.clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const bottomBooking = document.getElementById("marina-footer-booking");
+    if (!bottomBooking) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setBottomBookingVisible(entry.isIntersecting),
+      { threshold: 0.1 },
+    );
+    observer.observe(bottomBooking);
+    return () => observer.disconnect();
   }, []);
 
   return (
@@ -54,7 +66,7 @@ export function MarinaHero({ dockwaUrl }: { dockwaUrl: string }) {
         <p className="overline-label !text-gold-400">
           EXUMA YACHT CLUB · GEORGE TOWN, BAHAMAS
         </p>
-        <h1 className="mt-4 max-w-3xl font-display text-4xl leading-[1.08] font-medium text-ivory-50 sm:text-5xl lg:text-6xl">
+        <h1 className="mt-4 max-w-3xl font-display text-3xl leading-[1.08] font-medium text-ivory-50 sm:text-5xl lg:text-6xl">
           A Protected Berth on Elizabeth Harbour
         </h1>
         <p className="mt-5 max-w-2xl text-base leading-relaxed text-ivory-100/80 sm:text-lg">
@@ -62,7 +74,9 @@ export function MarinaHero({ dockwaUrl }: { dockwaUrl: string }) {
           shore services and convenient access to the island.
         </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <MarinaBookingTransition dockwaUrl={dockwaUrl} />
+          {!bottomBookingVisible && (
+            <MarinaBookingTransition dockwaUrl={dockwaUrl} />
+          )}
           <a
             href={site.phone.href}
             className="inline-flex items-center justify-center gap-2 border border-ivory-50/60 px-7 py-3.5 text-[12px] font-semibold uppercase tracking-[0.16em] text-ivory-50 hover:bg-ivory-50 hover:text-navy-900"

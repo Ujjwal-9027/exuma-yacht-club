@@ -216,13 +216,13 @@ export function HomepageMerchandiseShowcase({
       </Reveal>
       <div className="min-w-0 lg:h-full">
         <div
-          className={`grid gap-x-5 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 ${visibleSupporting.length === VISIBLE_SUPPORTING_COUNT ? "lg:h-full lg:grid-rows-2" : ""}`}
+          className={`flex snap-x snap-mandatory gap-5 overflow-x-auto pb-3 sm:grid sm:overflow-visible sm:pb-0 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-5 lg:gap-y-8 ${visibleSupporting.length === VISIBLE_SUPPORTING_COUNT ? "lg:h-full lg:grid-rows-2" : ""}`}
         >
           {visibleSupporting.map((product, index) => (
             <Reveal
               key={product.slug}
               delay={index * 60}
-              className={`${index >= 3 ? "hidden sm:block" : ""} ${visibleSupporting.length === VISIBLE_SUPPORTING_COUNT ? "h-full [&>a]:h-full" : ""}`}
+              className={`w-[78vw] shrink-0 snap-start sm:w-auto sm:shrink ${visibleSupporting.length === VISIBLE_SUPPORTING_COUNT ? "h-full [&>a]:h-full" : ""}`}
             >
               {merchandiseCard(product)}
             </Reveal>

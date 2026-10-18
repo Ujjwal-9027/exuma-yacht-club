@@ -1,5 +1,12 @@
 import { MongoClient, type Collection, type Db, type Document } from "mongodb";
-import type { Inquiry, Order, Product, SiteSettings } from "./schema";
+import type {
+  Inquiry,
+  InquiryNote,
+  InquiryStatus,
+  Order,
+  Product,
+  SiteSettings,
+} from "./schema";
 
 const globalForDb = globalThis as typeof globalThis & {
   __exumaMongoClient?: MongoClient;
@@ -23,6 +30,7 @@ async function database(): Promise<Db> {
       globalForDb.__exumaMongoDb.collection("products").createIndex({ slug: 1 }, { unique: true }),
       globalForDb.__exumaMongoDb.collection("orders").createIndex({ orderNumber: 1 }, { unique: true }),
       globalForDb.__exumaMongoDb.collection("settings").createIndex({ id: 1 }, { unique: true }),
+      globalForDb.__exumaMongoDb.collection("inquiries").createIndex({ createdAt: -1, type: 1, status: 1 }),
       globalForDb.__exumaMongoDb.collection("rate_limits").createIndex({ resetAt: 1 }, { expireAfterSeconds: 0 }),
     ]);
   }
@@ -45,6 +53,54 @@ async function nextId(name: string): Promise<number> {
     { upsert: true, returnDocument: "after" },
   );
   return result!.value;
+}
+
+export type InquiryListFilters = {
+  type?: string;
+  search?: string;
+  status?: InquiryStatus;
+  from?: Date;
+  to?: Date;
+  skip?: number;
+  limit?: number;
+};
+
+function escapeRegex(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function normalizeInquiry(inquiry: Inquiry): Inquiry {
+  return {
+    ...inquiry,
+    status: inquiry.status ?? "new",
+    readAt: inquiry.readAt ?? null,
+    internalNotes: inquiry.internalNotes ?? [],
+  };
+}
+
+function inquiryQuery(filters: InquiryListFilters): Record<string, unknown> {
+  const query: Record<string, unknown> = {};
+  const conditions: Record<string, unknown>[] = [];
+  if (filters.type) query.type = filters.type;
+  if (filters.search) {
+    const expression = { $regex: escapeRegex(filters.search.slice(0, 120)), $options: "i" };
+    conditions.push({ $or: [{ fullName: expression }, { email: expression }] });
+  }
+  if (filters.status) {
+    conditions.push({
+      $or: filters.status === "new"
+        ? [{ status: "new" }, { status: { $exists: false } }]
+        : [{ status: filters.status }],
+    });
+  }
+  if (filters.from || filters.to) {
+    query.createdAt = {
+      ...(filters.from ? { $gte: filters.from } : {}),
+      ...(filters.to ? { $lt: filters.to } : {}),
+    };
+  }
+  if (conditions.length > 0) query.$and = conditions;
+  return query;
 }
 
 export const db = {
@@ -100,8 +156,26 @@ export const db = {
     await products.updateOne({ slug, trackInventory: true }, { $inc: { stockQty: quantity }, $set: { updatedAt: new Date() } });
   },
   async listProducts(search?: string): Promise<Product[]> {
-    const filter = search
-      ? { $or: [{ name: { $regex: search, $options: "i" } }, { slug: { $regex: search, $options: "i" } }, { sku: { $regex: search, $options: "i" } }] }
+    const normalizedSearch = search?.trim().slice(0, 120) ?? "";
+    const filter = normalizedSearch
+      ? (() => {
+          const escaped = normalizedSearch.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+          const conditions: Record<string, unknown>[] = [
+            { name: { $regex: escaped, $options: "i" } },
+            { slug: { $regex: escaped, $options: "i" } },
+            { sku: { $regex: escaped, $options: "i" } },
+          ];
+          const priceValue = Number(normalizedSearch.replace(/[$,]/g, ""));
+          if (Number.isFinite(priceValue) && priceValue >= 0) {
+            const priceCents = Math.round(priceValue * 100);
+            conditions.push(
+              { priceCents },
+              { salePriceCents: priceCents },
+              { compareAtPriceCents: priceCents },
+            );
+          }
+          return { $or: conditions };
+        })()
       : {};
     return collection<Product>("products").then((c) => c.find(filter).sort({ sortOrder: 1, id: 1 }).toArray().then((products) => products.map(stripMongoId)));
   },
@@ -124,16 +198,80 @@ export const db = {
     await (await collection<Product>("products")).deleteOne({ id });
     return "deleted";
   },
-  async createInquiry(input: Omit<Inquiry, "id" | "createdAt" | "handled">): Promise<Inquiry> {
+  async createInquiry(input: Omit<Inquiry, "id" | "createdAt" | "handled" | "status" | "readAt" | "internalNotes">): Promise<Inquiry> {
     const inquiry = { ...input, id: await nextId("inquiries"), handled: false, createdAt: new Date() };
     await (await collection<Inquiry>("inquiries")).insertOne(inquiry);
-    return inquiry;
+    return normalizeInquiry(inquiry);
   },
-  async listInquiries(type?: string): Promise<Inquiry[]> {
-    return collection<Inquiry>("inquiries").then((c) => c.find(type ? { type } : {}).sort({ createdAt: -1 }).toArray());
+  async listInquiries(filters: InquiryListFilters = {}): Promise<Inquiry[]> {
+    const cursor = await collection<Inquiry>("inquiries");
+    return (await cursor
+      .find(inquiryQuery(filters))
+      .sort({ createdAt: -1 })
+      .skip(Math.max(0, filters.skip ?? 0))
+      .limit(Math.min(100, Math.max(1, filters.limit ?? 25)))
+      .toArray()).map(normalizeInquiry);
+  },
+  async countInquiries(filters: Omit<InquiryListFilters, "skip" | "limit"> = {}): Promise<number> {
+    return (await collection<Inquiry>("inquiries")).countDocuments(inquiryQuery(filters));
+  },
+  async getInquiryById(id: number): Promise<Inquiry | null> {
+    const inquiry = await (await collection<Inquiry>("inquiries")).findOne({ id });
+    return inquiry ? normalizeInquiry(inquiry) : null;
   },
   async setInquiryHandled(id: number, handled: boolean) {
-    await (await collection<Inquiry>("inquiries")).updateOne({ id }, { $set: { handled } });
+    await (await collection<Inquiry>("inquiries")).updateOne(
+      { id },
+      { $set: { handled, status: handled ? "replied" : "new", updatedAt: new Date() } },
+    );
+  },
+  async updateInquiryStatus(id: number, status: InquiryStatus): Promise<void> {
+    const collectionRef = await collection<Inquiry>("inquiries");
+    if (status === "new") {
+      await collectionRef.updateOne(
+        { id },
+        {
+          $set: {
+            status,
+            handled: false,
+            updatedAt: new Date(),
+          },
+          $unset: { readAt: "" },
+        },
+      );
+      return;
+    }
+    await collectionRef.updateOne(
+      { id },
+      {
+        $set: {
+          status,
+          handled: status === "replied" || status === "archived",
+          readAt: new Date(),
+          updatedAt: new Date(),
+        },
+      },
+    );
+  },
+  async markInquiryRead(id: number): Promise<void> {
+    const collectionRef = await collection<Inquiry>("inquiries");
+    await collectionRef.updateOne(
+      { id },
+      { $set: { readAt: new Date(), updatedAt: new Date() } },
+    );
+    await collectionRef.updateOne(
+      { id, $or: [{ status: "new" }, { status: { $exists: false } }] },
+      { $set: { status: "read" } },
+    );
+  },
+  async addInquiryNote(id: number, note: InquiryNote): Promise<void> {
+    await (await collection<Inquiry>("inquiries")).updateOne(
+      { id },
+      { $push: { internalNotes: note }, $set: { updatedAt: new Date() } },
+    );
+  },
+  async recentInquiries(limit = 5): Promise<Inquiry[]> {
+    return db.listInquiries({ limit });
   },
   async createOrder(input: Omit<Order, "id" | "createdAt">): Promise<Order> {
     const order = { ...input, id: await nextId("orders"), createdAt: new Date() };
@@ -143,14 +281,14 @@ export const db = {
   async getOrderByNumber(orderNumber: string): Promise<Order | null> {
     return collection<Order>("orders").then((c) => c.findOne({ orderNumber }));
   },
-  async listOrders(filters: { q?: string; status?: string; paymentStatus?: string } = {}): Promise<Order[]> {
+  async listOrders(filters: { q?: string; status?: string; paymentStatus?: string; limit?: number } = {}): Promise<Order[]> {
     const query: Record<string, unknown> = {};
     if (filters.status) query.$or = [{ fulfillmentStatus: filters.status }, { status: filters.status }];
     if (filters.paymentStatus) query.paymentStatus = filters.paymentStatus;
     if (filters.q) {
       query.$and = [{ $or: [{ orderNumber: { $regex: filters.q, $options: "i" } }, { customerName: { $regex: filters.q, $options: "i" } }, { email: { $regex: filters.q, $options: "i" } }] }];
     }
-    return collection<Order>("orders").then((c) => c.find(query).sort({ createdAt: -1 }).toArray());
+    return collection<Order>("orders").then((c) => c.find(query).sort({ createdAt: -1 }).limit(Math.min(100, Math.max(1, filters.limit ?? 100))).toArray());
   },
   async getOrderById(id: number): Promise<Order | null> {
     return collection<Order>("orders").then((c) => c.findOne({ id }));
@@ -171,20 +309,24 @@ export const db = {
   async dashboardStats() {
     const orders = collection<Order>("orders");
     const products = collection<Product>("products");
-    const [totalOrders, pendingOrders, paidOrders, cancelledOrders, refundedOrders, productCount, lowStockCount, sales] = await Promise.all([
+    const inquiries = collection<Inquiry>("inquiries");
+    const [totalOrders, pendingOrders, readyOrders, paidOrders, cancelledOrders, refundedOrders, productCount, lowStockCount, newInquiries, unreadInquiries, sales] = await Promise.all([
       orders.then((c) => c.countDocuments()),
       orders.then((c) => c.countDocuments({ $or: [{ fulfillmentStatus: "processing" }, { fulfillmentStatus: "pending" }, { status: "pending" }] })),
+      orders.then((c) => c.countDocuments({ $or: [{ fulfillmentStatus: "ready" }, { status: "ready" }] })),
       orders.then((c) => c.countDocuments({ paymentStatus: "paid" })),
       orders.then((c) => c.countDocuments({ $or: [{ fulfillmentStatus: "cancelled" }, { status: "cancelled" }] })),
       orders.then((c) => c.countDocuments({ paymentStatus: "refunded" })),
       products.then((c) => c.countDocuments()),
       products.then((c) => c.countDocuments({ trackInventory: true, stockQty: { $lte: 5 } })),
+      inquiries.then((c) => c.countDocuments({ $or: [{ status: "new" }, { status: { $exists: false } }] })),
+      inquiries.then((c) => c.countDocuments({ readAt: { $exists: false } })),
       orders.then((c) => c.aggregate<{ _id: null; total: number }>([
         { $match: { paymentStatus: "paid" } },
         { $group: { _id: null, total: { $sum: "$totalCents" } } },
       ]).toArray()),
     ]);
-    return { totalOrders, pendingOrders, paidOrders, cancelledOrders, refundedOrders, productCount, lowStockCount, salesCents: sales[0]?.total ?? 0 };
+    return { totalOrders, pendingOrders, readyOrders, paidOrders, cancelledOrders, refundedOrders, productCount, lowStockCount, newInquiries, unreadInquiries, salesCents: sales[0]?.total ?? 0 };
   },
   async count(collectionName: "products" | "orders" | "inquiries", filter: Record<string, unknown> = {}) {
     return (await collection(collectionName)).countDocuments(filter);

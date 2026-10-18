@@ -12,6 +12,19 @@ export function SettingsForm({
   values: {
     businessName: string;
     contactEmail: string;
+    addressStreet?: string;
+    addressLocality?: string;
+    addressCountry?: string;
+    addressPoBox?: string;
+    marinaPhone?: string;
+    restaurantPhone?: string;
+    whatsappLabel?: string;
+    vhfChannel?: string;
+    googleMapsUrl?: string;
+    socialFacebook?: string;
+    socialInstagram?: string;
+    inquiryNotificationEmail?: string;
+    orderNotificationEmail?: string;
     resnexusBookingUrl: string;
     dockwaUrl: string;
     whatsappNumber: string;
@@ -52,6 +65,174 @@ export function SettingsForm({
             defaultValue={values.contactEmail}
             className="field"
           />
+        </div>
+        <div>
+          <label htmlFor="marinaPhone" className="field-label">
+            Marina & Dock Office phone
+          </label>
+          <input
+            id="marinaPhone"
+            name="marinaPhone"
+            type="tel"
+            defaultValue={values.marinaPhone ?? ""}
+            className="field"
+          />
+        </div>
+        <div>
+          <label htmlFor="restaurantPhone" className="field-label">
+            Restaurant & Bar phone
+          </label>
+          <input
+            id="restaurantPhone"
+            name="restaurantPhone"
+            type="tel"
+            defaultValue={values.restaurantPhone ?? ""}
+            className="field"
+          />
+        </div>
+        <div>
+          <label htmlFor="whatsappLabel" className="field-label">
+            WhatsApp display number
+          </label>
+          <input
+            id="whatsappLabel"
+            name="whatsappLabel"
+            type="tel"
+            defaultValue={values.whatsappLabel ?? ""}
+            className="field"
+          />
+        </div>
+        <div>
+          <label htmlFor="vhfChannel" className="field-label">
+            VHF channel
+          </label>
+          <input
+            id="vhfChannel"
+            name="vhfChannel"
+            defaultValue={values.vhfChannel ?? ""}
+            className="field"
+          />
+        </div>
+        <div className="sm:col-span-2 border-t border-sand-200 pt-5">
+          <h2 className="font-display text-2xl text-navy-900">
+            Social media links
+          </h2>
+          <p className="mt-1.5 text-xs text-ink-400">
+            Configured profiles appear as icons in the public footer.
+          </p>
+        </div>
+        <div>
+          <label htmlFor="socialFacebook" className="field-label">
+            Facebook URL
+          </label>
+          <input
+            id="socialFacebook"
+            name="socialFacebook"
+            type="url"
+            defaultValue={values.socialFacebook ?? ""}
+            className="field"
+            placeholder="https://www.facebook.com/..."
+          />
+        </div>
+        <div>
+          <label htmlFor="socialInstagram" className="field-label">
+            Instagram URL
+          </label>
+          <input
+            id="socialInstagram"
+            name="socialInstagram"
+            type="url"
+            defaultValue={values.socialInstagram ?? ""}
+            className="field"
+            placeholder="https://www.instagram.com/..."
+          />
+        </div>
+        <div>
+          <label htmlFor="addressStreet" className="field-label">
+            Street address
+          </label>
+          <input
+            id="addressStreet"
+            name="addressStreet"
+            defaultValue={values.addressStreet ?? ""}
+            className="field"
+          />
+        </div>
+        <div>
+          <label htmlFor="addressLocality" className="field-label">
+            Town / locality
+          </label>
+          <input
+            id="addressLocality"
+            name="addressLocality"
+            defaultValue={values.addressLocality ?? ""}
+            className="field"
+          />
+        </div>
+        <div>
+          <label htmlFor="addressCountry" className="field-label">
+            Country
+          </label>
+          <input
+            id="addressCountry"
+            name="addressCountry"
+            defaultValue={values.addressCountry ?? ""}
+            className="field"
+          />
+        </div>
+        <div>
+          <label htmlFor="addressPoBox" className="field-label">
+            Postal address / P.O. Box
+          </label>
+          <input
+            id="addressPoBox"
+            name="addressPoBox"
+            defaultValue={values.addressPoBox ?? ""}
+            className="field"
+          />
+        </div>
+        <div className="sm:col-span-2">
+          <label htmlFor="googleMapsUrl" className="field-label">
+            Google Maps directions URL
+          </label>
+          <input
+            id="googleMapsUrl"
+            name="googleMapsUrl"
+            type="url"
+            defaultValue={values.googleMapsUrl ?? ""}
+            className="field"
+            placeholder="https://maps.google.com/..."
+          />
+        </div>
+        <div>
+          <label htmlFor="inquiryNotificationEmail" className="field-label">
+            Inquiry notification email
+          </label>
+          <input
+            id="inquiryNotificationEmail"
+            name="inquiryNotificationEmail"
+            type="email"
+            defaultValue={values.inquiryNotificationEmail ?? ""}
+            className="field"
+          />
+          <p className="mt-1.5 text-xs text-ink-400">
+            Contact, dining, dockage, stay, and fuel queries.
+          </p>
+        </div>
+        <div>
+          <label htmlFor="orderNotificationEmail" className="field-label">
+            New order notification email
+          </label>
+          <input
+            id="orderNotificationEmail"
+            name="orderNotificationEmail"
+            type="email"
+            defaultValue={values.orderNotificationEmail ?? ""}
+            className="field"
+          />
+          <p className="mt-1.5 text-xs text-ink-400">
+            New shop orders and payment updates.
+          </p>
         </div>
         <div>
           <label htmlFor="resnexusBookingUrl" className="field-label">

@@ -1,7 +1,8 @@
 import type { Inquiry, Order } from "@/db/schema";
 import { formatMoney } from "@/lib/format";
 import { escapeHtml, sendCustomerEmail, sendNotification } from "@/lib/email";
-import { PAYMENT_REFERENCE_PLACEHOLDER } from "@/lib/receipt";
+import { getManagedSiteSettings } from "@/lib/managed-site";
+import { buildTransactionalOrderEmail } from "@/lib/transactional-email";
 
 const TYPE_LABELS: Record<string, string> = {
   dockage: "Dockage request",
@@ -18,6 +19,7 @@ function row(label: string, value: string | null | undefined): string {
 
 export async function notifyNewInquiry(inquiry: Inquiry): Promise<void> {
   const typeLabel = TYPE_LABELS[inquiry.type] ?? inquiry.type;
+  const settings = await getManagedSiteSettings();
   const html = `
     <div style="font-family:system-ui,sans-serif;max-width:560px">
       <h2 style="color:#0c2733;margin:0 0 12px">New ${escapeHtml(typeLabel)}</h2>
@@ -37,7 +39,7 @@ export async function notifyNewInquiry(inquiry: Inquiry): Promise<void> {
       </table>
     </div>`;
   await sendNotification({
-    to: "",
+    to: settings.inquiryNotificationEmail ?? "",
     subject: `${typeLabel} — ${inquiry.fullName}`,
     html,
     replyTo: inquiry.email,
@@ -45,6 +47,16 @@ export async function notifyNewInquiry(inquiry: Inquiry): Promise<void> {
 }
 
 export async function notifyNewOrder(order: Order): Promise<void> {
+  const settings = await getManagedSiteSettings();
+  const paymentStatus = order.paymentStatus.toLowerCase();
+  const paymentLabel = paymentStatus === "paid"
+    ? "Paid"
+    : paymentStatus === "pending"
+      ? "Payment pending"
+      : paymentStatus === "refunded"
+        ? "Refunded"
+        : paymentStatus.charAt(0).toUpperCase() + paymentStatus.slice(1);
+  const totalLabel = paymentStatus === "paid" ? "Order total" : "Total due";
   const items = order.items
     .map(
       (i) =>
@@ -58,6 +70,7 @@ export async function notifyNewOrder(order: Order): Promise<void> {
         ${row("Customer", order.customerName)}
         ${row("Email", order.email)}
         ${row("Phone", order.phone)}
+        ${row("Payment", paymentLabel)}
         ${row("Delivery", order.fulfillment === "ship" ? `${order.deliverySpeed === "priority" ? "Priority" : "Standard"} delivery to ${order.shippingAddress?.city ?? "address"} (${formatMoney(order.shippingFeeCents ?? 0, order.currency)})` : "Collect at the dock")}
         ${row("Shipping address", order.shippingAddress ? [
           order.shippingAddress.addressLine1,
@@ -68,120 +81,52 @@ export async function notifyNewOrder(order: Order): Promise<void> {
         ${row("Notes", order.notes)}
       </table>
       <ul style="padding-left:18px;margin:12px 0">${items}</ul>
-      <p style="font-size:14px"><strong>Total due: ${formatMoney(order.totalCents, order.currency)}</strong></p>
+      <p style="font-size:14px"><strong>${totalLabel}: ${formatMoney(order.totalCents, order.currency)}</strong></p>
     </div>`;
   await sendNotification({
-    to: "",
+    to: settings.orderNotificationEmail ?? "",
     subject: `New order ${order.orderNumber} — ${formatMoney(order.totalCents, order.currency)}`,
     html,
     replyTo: order.email,
   });
 }
 
-/** Confirmation email TO the customer (sent only when email is configured). */
+/** Branded customer confirmation email, sent after the order is persisted. */
 export async function sendOrderConfirmationToCustomer(order: Order): Promise<void> {
-  const items = order.items
-    .map(
-      (i) =>
-        `<li style="font-size:13px;margin-bottom:6px">${escapeHtml(i.name)}${i.size ? ` · ${escapeHtml(i.size)}` : ""}${i.color ? ` · ${escapeHtml(i.color)}` : ""} × ${i.qty} — <strong>${formatMoney(i.priceCents * i.qty, order.currency)}</strong></li>`,
-    )
-    .join("");
-  const delivery =
-    order.fulfillment === "ship"
-      ? `You chose ${order.deliverySpeed === "priority" ? "priority" : "standard"} delivery to ${order.shippingAddress?.city ?? "your address"}. Delivery fee: ${formatMoney(order.shippingFeeCents ?? 0, order.currency)}.`
-      : "Collect your order at the marina gift shop on Queen's Highway, George Town. Please bring your order number.";
-  const html = `
-    <div style="font-family:system-ui,sans-serif;max-width:560px">
-      <h2 style="color:#0c2733;margin:0 0 12px">Order placed successfully</h2>
-      <p style="font-size:13px;color:#444">Order <strong>${escapeHtml(order.orderNumber)}</strong></p>
-      <p style="font-size:13px;color:#444">Your order has been received and recorded. This email contains your order details.</p>
-      <table style="border-collapse:collapse">
-        ${row("Customer", order.customerName)}
-        ${row("Email", order.email)}
-        ${row("Payment status", order.paymentStatus)}
-        ${row("Payment reference", PAYMENT_REFERENCE_PLACEHOLDER)}
-      </table>
-      <ul style="padding-left:18px;margin:12px 0">${items}</ul>
-      <p style="font-size:14px"><strong>Order total: ${formatMoney(order.totalCents, order.currency)}</strong>${order.paymentMethod === "at_pickup" ? " (pay at pickup)" : order.paymentMethod === "demo_card" ? " (demo debit card)" : " (demo PayPal)"}</p>
-      <p style="font-size:13px;color:#444">${delivery}</p>
-      ${order.shippingAddress ? `<p style="font-size:13px;color:#444"><strong>Shipping address:</strong><br>${escapeHtml(order.shippingAddress.addressLine1)}${order.shippingAddress.addressLine2 ? `<br>${escapeHtml(order.shippingAddress.addressLine2)}` : ""}<br>${escapeHtml([order.shippingAddress.city, order.shippingAddress.region, order.shippingAddress.postalCode].filter(Boolean).join(", "))}<br>${escapeHtml(order.shippingAddress.country)}</p>` : ""}
-      <p style="font-size:13px;color:#444">Questions? Call +1 (242) 336-2578.</p>
-    </div>`;
-  await sendCustomerEmail({
-    to: order.email,
-    subject: `Your Exuma Yacht Club order ${order.orderNumber}`,
-    html,
-  });
+  const settings = await getManagedSiteSettings();
+  const email = buildTransactionalOrderEmail(order, "pending", settings.orderStatusEmailTemplates);
+  await sendCustomerEmail({ to: order.email, subject: email.subject, html: email.html, text: email.text });
 }
 
-export async function sendOrderCancellationToCustomer(
-  order: Order,
-  reason: string,
-): Promise<void> {
-  const items = order.items
-    .map(
-      (item) =>
-        `<li style="font-size:13px;margin-bottom:6px">${escapeHtml(item.name)}${item.size ? ` · ${escapeHtml(item.size)}` : ""}${item.color ? ` · ${escapeHtml(item.color)}` : ""} × ${item.qty} — <strong>${formatMoney(item.priceCents * item.qty, order.currency)}</strong></li>`,
-    )
-    .join("");
-  const html = `
-    <div style="font-family:system-ui,sans-serif;max-width:560px">
-      <h2 style="color:#8f3526;margin:0 0 12px">Your order has been cancelled</h2>
-      <p style="font-size:13px;color:#444">Order <strong>${escapeHtml(order.orderNumber)}</strong></p>
-      <p style="font-size:13px;color:#444">We are sorry, but our team could not complete this order.</p>
-      <table style="border-collapse:collapse">
-        ${row("Customer", order.customerName)}
-        ${row("Cancellation reason", reason)}
-        ${row("Payment status", order.paymentStatus)}
-        ${row("Payment reference", PAYMENT_REFERENCE_PLACEHOLDER)}
-      </table>
-      <ul style="padding-left:18px;margin:12px 0">${items}</ul>
-      <p style="font-size:14px"><strong>Order total: ${formatMoney(order.totalCents, order.currency)}</strong></p>
-      <p style="font-size:13px;color:#444">If you have questions, call +1 (242) 336-2578.</p>
-    </div>`;
-  await sendCustomerEmail({
-    to: order.email,
-    subject: `Order cancelled — ${order.orderNumber}`,
-    html,
-  });
+export async function sendOrderCancellationToCustomer(order: Order, reason: string): Promise<void> {
+  const settings = await getManagedSiteSettings();
+  const email = buildTransactionalOrderEmail(
+    { ...order, cancellationReason: reason },
+    "cancelled",
+    settings.orderStatusEmailTemplates,
+  );
+  await sendCustomerEmail({ to: order.email, subject: email.subject, html: email.html, text: email.text });
 }
-
-const ORDER_STATUS_LABELS: Record<string, string> = {
-  pending: "Order received",
-  processing: "Order processing",
-  ready: "Ready for pickup",
-  shipped: "Order shipped",
-  delivered: "Order delivered",
-  fulfilled: "Order fulfilled",
-  cancelled: "Order cancelled",
-};
 
 export async function sendOrderStatusUpdateToCustomer(
   order: Order,
   status: string,
 ): Promise<void> {
-  const label = ORDER_STATUS_LABELS[status] ?? `Order status: ${status}`;
-  const delivery = order.fulfillment === "ship"
-    ? `${order.deliverySpeed === "priority" ? "Priority" : "Standard"} delivery to ${order.shippingAddress?.city ?? "your address"}`
-    : "Collect at the dock";
-  const html = `
-    <div style="font-family:system-ui,sans-serif;max-width:560px">
-      <h2 style="color:#0c2733;margin:0 0 12px">${escapeHtml(label)}</h2>
-      <p style="font-size:13px;color:#444">Order <strong>${escapeHtml(order.orderNumber)}</strong></p>
-      <table style="border-collapse:collapse">
-        ${row("Customer", order.customerName)}
-        ${row("Current status", label)}
-        ${row("Delivery", delivery)}
-        ${row("Payment status", order.paymentStatus)}
-        ${row("Total", formatMoney(order.totalCents, order.currency))}
-        ${row("Carrier", order.shippingCarrier)}
-        ${row("Tracking number", order.trackingNumber)}
-      </table>
-      <p style="font-size:13px;color:#444">Please contact Exuma Yacht Club if you have questions about this update.</p>
-    </div>`;
-  await sendCustomerEmail({
-    to: order.email,
-    subject: `${label} — ${order.orderNumber}`,
-    html,
-  });
+  const settings = await getManagedSiteSettings();
+  const validStatuses = new Set([
+    "pending",
+    "processing",
+    "ready",
+    "shipped",
+    "delivered",
+    "fulfilled",
+    "cancelled",
+  ]);
+  const emailStatus = validStatuses.has(status) ? status : "processing";
+  const email = buildTransactionalOrderEmail(
+    order,
+    emailStatus as "pending" | "processing" | "ready" | "shipped" | "delivered" | "fulfilled" | "cancelled",
+    settings.orderStatusEmailTemplates,
+  );
+  await sendCustomerEmail({ to: order.email, subject: email.subject, html: email.html, text: email.text });
 }

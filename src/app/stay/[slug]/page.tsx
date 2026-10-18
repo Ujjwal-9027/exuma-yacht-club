@@ -4,10 +4,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Check } from "lucide-react";
 import { getRoom, rooms } from "@/data/rooms";
-import { config } from "@/config/site";
 import { Container } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { ConfiguredBookingLink } from "@/components/configured-link";
+import { getManagedSiteSettings } from "@/lib/managed-site";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -36,7 +36,8 @@ export default async function RoomPage({ params }: Props) {
   const room = getRoom(slug);
   if (!room) notFound();
 
-  const bookingUrl = room.resnexusUrl ?? config.resnexusBookingUrl;
+  const settings = await getManagedSiteSettings();
+  const bookingUrl = settings.resnexusBookingUrl;
 
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",

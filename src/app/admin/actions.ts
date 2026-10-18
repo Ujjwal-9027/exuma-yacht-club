@@ -1,7 +1,9 @@
 "use server";
 
+import { randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { z } from "zod";
 import { db } from "@/db";
 import {
   clearAdminCookie,
@@ -9,8 +11,12 @@ import {
   setAdminCookie,
   verifyPassword,
 } from "@/lib/admin-auth";
-import { rateLimitDb } from "@/lib/server-utils";
-import type { ProductImage, ProductVariant } from "@/db/schema";
+import { EMAIL_RE, rateLimitDb } from "@/lib/server-utils";
+import type { InquiryStatus, ProductImage, ProductVariant } from "@/db/schema";
+import {
+  DEFAULT_ORDER_STATUS_EMAIL_TEMPLATES,
+  ORDER_STATUS_EMAIL_STATUSES,
+} from "@/lib/order-email-templates";
 import {
   sendOrderCancellationToCustomer,
   sendOrderStatusUpdateToCustomer,
@@ -25,6 +31,17 @@ const ORDER_STATUSES = new Set([
   "fulfilled",
   "cancelled",
 ]);
+
+const INQUIRY_STATUSES = z.enum([
+  "new",
+  "read",
+  "in_progress",
+  "replied",
+  "confirmed",
+  "declined",
+  "archived",
+]);
+const INQUIRY_ID = z.number().int().positive();
 
 export type LoginState = { error: string | null };
 export type ActionState = { error: string | null };
@@ -61,8 +78,60 @@ export async function markInquiryHandled(
   handled: boolean,
 ): Promise<void> {
   await assertAdmin();
-  await db.setInquiryHandled(id, handled);
+  await db.updateInquiryStatus(id, handled ? "replied" : "new");
   revalidatePath("/admin/inquiries");
+}
+
+export async function updateInquiryStatusAction(
+  id: number,
+  formData: FormData,
+): Promise<void> {
+  await assertAdmin();
+  const inquiryId = INQUIRY_ID.parse(id);
+  const nextStatus = INQUIRY_STATUSES.parse(String(formData.get("status") ?? ""));
+  const requestedReturnTo = String(formData.get("returnTo") ?? "");
+  const returnTo = requestedReturnTo.startsWith("/admin/")
+    ? requestedReturnTo
+    : `/admin/inquiries/${inquiryId}?saved=status`;
+  const inquiry = await db.getInquiryById(inquiryId);
+  if (!inquiry) redirect("/admin/inquiries?error=missing");
+  if ((nextStatus === "confirmed" || nextStatus === "declined") && inquiry.type !== "dining") {
+    redirect(`/admin/inquiries/${inquiryId}?error=status`);
+  }
+  await db.updateInquiryStatus(inquiryId, nextStatus);
+  revalidatePath("/admin/inquiries");
+  revalidatePath(`/admin/inquiries/${inquiryId}`);
+  revalidatePath("/admin");
+  redirect(returnTo);
+}
+
+export async function markInquiryReadAction(id: number): Promise<void> {
+  await assertAdmin();
+  const inquiryId = INQUIRY_ID.parse(id);
+  await db.markInquiryRead(inquiryId);
+  revalidatePath("/admin/inquiries");
+  revalidatePath(`/admin/inquiries/${inquiryId}`);
+  revalidatePath("/admin");
+}
+
+export async function addInquiryNoteAction(
+  id: number,
+  formData: FormData,
+): Promise<void> {
+  await assertAdmin();
+  const inquiryId = INQUIRY_ID.parse(id);
+  const text = z
+    .string()
+    .trim()
+    .min(1, "Enter a note before saving.")
+    .max(2000, "Notes must be 2,000 characters or fewer.")
+    .parse(String(formData.get("note") ?? ""));
+  await db.addInquiryNote(inquiryId, {
+    id: randomUUID(),
+    text,
+    createdAt: new Date(),
+  });
+  revalidatePath(`/admin/inquiries/${inquiryId}`);
 }
 
 export async function updateOrderStatus(
@@ -305,9 +374,42 @@ export async function saveSiteSettingsAction(
 ): Promise<ActionState> {
   await assertAdmin();
   const current = await db.getSiteSettings();
+  const orderStatusEmailTemplates = Object.fromEntries(
+    ORDER_STATUS_EMAIL_STATUSES.map((status) => {
+      const fallback =
+        current?.orderStatusEmailTemplates?.[status] ??
+        DEFAULT_ORDER_STATUS_EMAIL_TEMPLATES[status];
+      const subject = String(formData.get(`orderEmail_${status}_subject`) ?? "")
+        .trim()
+        .slice(0, 180);
+      const body = String(formData.get(`orderEmail_${status}_body`) ?? "")
+        .trim()
+        .slice(0, 4000);
+      return [
+        status,
+        {
+          subject: subject || fallback.subject,
+          body: body || fallback.body,
+        },
+      ];
+    }),
+  );
   const input = {
     businessName: String(formData.get("businessName") ?? "").trim().slice(0, 160),
     contactEmail: String(formData.get("contactEmail") ?? "").trim().slice(0, 160),
+    addressStreet: String(formData.get("addressStreet") ?? "").trim().slice(0, 160),
+    addressLocality: String(formData.get("addressLocality") ?? "").trim().slice(0, 160),
+    addressCountry: String(formData.get("addressCountry") ?? "").trim().slice(0, 120),
+    addressPoBox: String(formData.get("addressPoBox") ?? "").trim().slice(0, 160),
+    marinaPhone: String(formData.get("marinaPhone") ?? "").trim().slice(0, 60),
+    restaurantPhone: String(formData.get("restaurantPhone") ?? "").trim().slice(0, 60),
+    whatsappLabel: String(formData.get("whatsappLabel") ?? "").trim().slice(0, 60),
+    vhfChannel: String(formData.get("vhfChannel") ?? "").trim().slice(0, 60),
+    googleMapsUrl: String(formData.get("googleMapsUrl") ?? "").trim().slice(0, 500),
+    socialFacebook: String(formData.get("socialFacebook") ?? "").trim().slice(0, 500),
+    socialInstagram: String(formData.get("socialInstagram") ?? "").trim().slice(0, 500),
+    inquiryNotificationEmail: String(formData.get("inquiryNotificationEmail") ?? "").trim().slice(0, 160),
+    orderNotificationEmail: String(formData.get("orderNotificationEmail") ?? "").trim().slice(0, 160),
     resnexusBookingUrl: String(formData.get("resnexusBookingUrl") ?? "").trim().slice(0, 500),
     dockwaUrl: String(formData.get("dockwaUrl") ?? "").trim().slice(0, 500),
     whatsappNumber: String(formData.get("whatsappNumber") ?? "").replace(/[^0-9]/g, "").slice(0, 20),
@@ -315,8 +417,21 @@ export async function saveSiteSettingsAction(
     seoDescription: String(formData.get("seoDescription") ?? "").trim().slice(0, 320),
     homeHeroTitle: current?.homeHeroTitle ?? "Your Exuma escape starts here.",
     homeHeroLede: current?.homeHeroLede ?? "Marina services, island stays, waterfront dining and essentials — all on the edge of Elizabeth Harbour.",
+    orderStatusEmailTemplates,
   };
   if (!input.businessName || !input.seoTitle) return { error: "Business name and SEO title are required." };
+  if ((input.inquiryNotificationEmail && !EMAIL_RE.test(input.inquiryNotificationEmail)) || (input.orderNotificationEmail && !EMAIL_RE.test(input.orderNotificationEmail))) {
+    return { error: "Notification email addresses must be valid email addresses." };
+  }
+  for (const [label, value] of [["Facebook", input.socialFacebook], ["Instagram", input.socialInstagram]] as const) {
+    if (value && !value.includes("PLACEHOLDER")) {
+      try {
+        if (new URL(value).protocol !== "https:") throw new Error();
+      } catch {
+        return { error: `${label} URL must be a valid HTTPS URL.` };
+      }
+    }
+  }
   for (const [label, value] of [["ResNexus", input.resnexusBookingUrl], ["Dockwa", input.dockwaUrl]] as const) {
     if (value && !value.includes("PLACEHOLDER")) {
       try {
@@ -324,6 +439,13 @@ export async function saveSiteSettingsAction(
       } catch {
         return { error: `${label} booking URL must be a valid HTTPS URL.` };
       }
+    }
+  }
+  if (input.googleMapsUrl && !input.googleMapsUrl.includes("PLACEHOLDER")) {
+    try {
+      if (new URL(input.googleMapsUrl).protocol !== "https:") throw new Error();
+    } catch {
+      return { error: "Google Maps URL must be a valid HTTPS URL." };
     }
   }
   await db.setSiteSettings(input);
@@ -343,6 +465,19 @@ export async function saveContentAction(
   const input = {
     businessName: current?.businessName ?? "Exuma Yacht Club & Marina",
     contactEmail: current?.contactEmail ?? "",
+    addressStreet: current?.addressStreet ?? "",
+    addressLocality: current?.addressLocality ?? "",
+    addressCountry: current?.addressCountry ?? "",
+    addressPoBox: current?.addressPoBox ?? "",
+    marinaPhone: current?.marinaPhone ?? "",
+    restaurantPhone: current?.restaurantPhone ?? "",
+    whatsappLabel: current?.whatsappLabel ?? "",
+    vhfChannel: current?.vhfChannel ?? "",
+    googleMapsUrl: current?.googleMapsUrl ?? "",
+    socialFacebook: current?.socialFacebook ?? "",
+    socialInstagram: current?.socialInstagram ?? "",
+    inquiryNotificationEmail: current?.inquiryNotificationEmail ?? "",
+    orderNotificationEmail: current?.orderNotificationEmail ?? "",
     resnexusBookingUrl: current?.resnexusBookingUrl ?? "",
     dockwaUrl: current?.dockwaUrl ?? "",
     whatsappNumber: current?.whatsappNumber ?? "",
@@ -350,6 +485,7 @@ export async function saveContentAction(
     seoDescription: current?.seoDescription ?? "A boutique marina, hotel, restaurant and gift shop in George Town, Great Exuma.",
     homeHeroTitle: String(formData.get("homeHeroTitle") ?? "").trim().slice(0, 160),
     homeHeroLede: String(formData.get("homeHeroLede") ?? "").trim().slice(0, 320),
+    orderStatusEmailTemplates: current?.orderStatusEmailTemplates ?? {},
   };
   if (!input.homeHeroTitle || !input.homeHeroLede) return { error: "Homepage heading and description are required." };
   await db.setSiteSettings(input);

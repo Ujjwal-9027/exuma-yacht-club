@@ -13,7 +13,6 @@ import { restaurantInfo } from "@/data/restaurant";
 import { config, isPlaceholder, waLink } from "@/config/site";
 import { Container, PageHero, SectionHeading } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
-import { InquiryForm } from "@/components/inquiry-form";
 
 export const metadata: Metadata = {
   title: "Restaurant & Dining",
@@ -250,27 +249,33 @@ export default function DiningPage() {
         className="border-t border-sand-200 bg-ivory-100 py-20 lg:py-24"
       >
         <Container>
-          <div className="grid gap-12 lg:grid-cols-12">
-            <div className="lg:col-span-4">
-              <SectionHeading
-                overline="Reservation Inquiry"
-                title="Request a table"
-                lede={restaurantInfo.confirmationNote}
-              />
-              <h2 id="dining-form-heading" className="sr-only">
-                Reservation inquiry form
-              </h2>
-            </div>
-            <div className="lg:col-span-8">
-              <Reveal delay={100}>
-                <InquiryForm
-                  kind="dining"
-                  id="dining-inquiry"
-                  heading="Reservation Inquiry"
-                  subheading="Name, phone, date, time and party size help the restaurant answer quickly. Same-day requests are fastest by phone."
-                />
-              </Reveal>
-            </div>
+          <div className="mx-auto max-w-3xl text-center">
+            <SectionHeading
+              overline="Reservations"
+              title="Request a table by WhatsApp"
+              lede={restaurantInfo.confirmationNote}
+              align="center"
+            />
+            <h2 id="dining-form-heading" className="sr-only">
+              WhatsApp restaurant reservations
+            </h2>
+            <Reveal delay={100} className="mt-8">
+              {isPlaceholder(config.whatsappNumber) ? (
+                <p className="text-sm text-ink-500">
+                  Please call the restaurant directly for reservations.
+                </p>
+              ) : (
+                <a
+                  href={whatsappHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 border border-navy-900 bg-navy-900 px-7 py-3.5 text-[12px] font-semibold uppercase tracking-[0.16em] text-ivory-50 transition-colors hover:bg-transparent hover:text-navy-900"
+                >
+                  <MessageCircle className="h-4 w-4" aria-hidden="true" />
+                  WhatsApp the Restaurant
+                </a>
+              )}
+            </Reveal>
           </div>
         </Container>
       </section>

@@ -3,9 +3,9 @@ import type { ReactNode } from "react";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { site } from "@/lib/site";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
 import { CartProvider } from "@/components/cart-provider";
+import { SiteChrome } from "@/components/site-chrome";
+import { getPublicContactSettings } from "@/lib/managed-site";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -80,7 +80,12 @@ function LocalBusinessJsonLd() {
   );
 }
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  const contactSettings = await getPublicContactSettings();
   return (
     <html
       lang="en"
@@ -95,9 +100,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           Skip to content
         </a>
         <CartProvider>
-          <SiteHeader />
-          <main id="main">{children}</main>
-          <SiteFooter />
+          <SiteChrome contactSettings={contactSettings}>{children}</SiteChrome>
         </CartProvider>
         <LocalBusinessJsonLd />
       </body>

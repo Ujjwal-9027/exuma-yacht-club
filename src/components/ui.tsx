@@ -30,7 +30,8 @@ export function SectionHeading({
   align?: "left" | "center";
   dark?: boolean;
 }) {
-  const alignCls = align === "center" ? "items-center text-center" : "items-start";
+  const alignCls =
+    align === "center" ? "items-center text-center" : "items-start";
   return (
     <Reveal className={`flex flex-col gap-4 ${alignCls}`}>
       <p className="overline-label">{overline}</p>
@@ -64,8 +65,7 @@ const buttonStyles: Record<ButtonVariant, string> = {
     "border border-navy-900/35 bg-transparent text-navy-900 hover:bg-navy-900 hover:text-ivory-50",
   outlineLight:
     "border border-ivory-50/60 bg-transparent text-ivory-50 hover:bg-ivory-50 hover:text-navy-900",
-  gold:
-    "border border-gold-500 bg-gold-500 text-navy-950 hover:bg-gold-400 hover:border-gold-400",
+  gold: "border border-gold-500 bg-gold-500 text-navy-950 hover:bg-gold-400 hover:border-gold-400",
 };
 
 const baseButton =
@@ -128,7 +128,7 @@ export function PageHero({
       />
       <Container className="relative w-full pb-14 pt-32 sm:pb-20">
         <p className="overline-label !text-gold-400">{overline}</p>
-        <h1 className="mt-4 max-w-3xl font-display text-4xl leading-[1.08] font-medium text-ivory-50 sm:text-5xl lg:text-6xl">
+        <h1 className="mt-4 max-w-3xl font-display text-3xl leading-[1.08] font-medium text-ivory-50 sm:text-5xl lg:text-6xl">
           {title}
         </h1>
         {lede && (

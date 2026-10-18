@@ -284,8 +284,8 @@ export function CartView() {
           </span>
         </div>
         <p className="mt-3 text-xs leading-relaxed text-ink-400">
-          Prices in USD. No payment is taken online — pay when you collect, or
-          once shipping is arranged.
+          Prices in USD. Payment is required at checkout. Pay securely with
+          PayPal or debit or credit card.
         </p>
         <Link
           href="/checkout"

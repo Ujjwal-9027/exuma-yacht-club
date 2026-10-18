@@ -5,10 +5,12 @@ import {
   ExternalLink,
   LayoutDashboard,
   LogOut,
+  MessageSquare,
   Package,
   Settings,
 } from "lucide-react";
 import { requireAdmin } from "@/lib/admin-auth";
+import { db } from "@/db";
 import { logoutAction } from "@/app/admin/actions";
 import { AnchorMark } from "@/components/logo";
 
@@ -16,6 +18,7 @@ const adminNav = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { label: "Products", href: "/admin/products", icon: Package },
   { label: "Orders", href: "/admin/orders", icon: ClipboardList },
+  { label: "Inquiries", href: "/admin/inquiries", icon: MessageSquare },
   { label: "Website content", href: "/admin/content", icon: Settings },
   { label: "Settings", href: "/admin/settings", icon: Settings },
 ] as const;
@@ -29,9 +32,12 @@ export async function AdminShell({
   children: ReactNode;
 }) {
   await requireAdmin();
+  const unreadInquiries = await db.count("inquiries", {
+    readAt: { $exists: false },
+  });
   return (
     <div className="min-h-[70vh] bg-[#f4f3ef] lg:flex">
-      <aside className="border-b border-navy-800 bg-navy-950 text-ivory-100 lg:min-h-[70vh] lg:w-64 lg:border-b-0 lg:border-r">
+      <aside className="border-b border-navy-800 bg-navy-950 text-ivory-100 lg:sticky lg:top-0 lg:h-screen lg:max-h-screen lg:w-64 lg:overflow-y-auto lg:self-start lg:border-b-0 lg:border-r">
         <div className="flex items-center justify-between px-5 py-5 lg:block lg:px-6">
           <Link href="/admin" className="flex items-center gap-2.5">
             <AnchorMark className="h-5 w-5 text-gold-400" />
@@ -58,6 +64,12 @@ export async function AdminShell({
                   >
                     <Icon className="h-4 w-4" aria-hidden="true" />
                     {item.label}
+                    {item.href === "/admin/inquiries" &&
+                      unreadInquiries > 0 && (
+                        <span className="ml-auto grid min-w-5 place-items-center rounded-full bg-gold-500 px-1.5 py-0.5 text-[10px] font-bold text-navy-950">
+                          {unreadInquiries > 99 ? "99+" : unreadInquiries}
+                        </span>
+                      )}
                   </Link>
                 </li>
               );

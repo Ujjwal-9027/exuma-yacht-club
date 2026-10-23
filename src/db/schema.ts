@@ -176,7 +176,6 @@ export type SiteSettings = {
   addressCountry?: string;
   addressPoBox?: string;
   marinaPhone?: string;
-  restaurantPhone?: string;
   whatsappLabel?: string;
   vhfChannel?: string;
   googleMapsUrl?: string;
@@ -185,5 +184,6 @@ export type SiteSettings = {
   inquiryNotificationEmail?: string;
   orderNotificationEmail?: string;
   orderStatusEmailTemplates?: OrderStatusEmailTemplates;
+  adminPasswordHash?: string;
   updatedAt: Date;
 };

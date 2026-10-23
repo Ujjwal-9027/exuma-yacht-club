@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  /* Brand palette — deep marine navy, warm ivory, muted brass */
+  /* Logo colors sampled from public/logo/EYCflag.png, paired with marine navy and warm ivory. */
   --color-navy-950: #071a22;
   --color-navy-900: #0c2733;
   --color-navy-800: #113444;
@@ -21,6 +21,8 @@
   --color-gold-400: #c9a86a;
   --color-gold-500: #b08d57;
   --color-gold-600: #96774a;
+  --color-brand-mint-300: #a2d6b7;
+  --color-brand-plum-700: #892c6f;
 
   --color-ink-900: #1e2427;
   --color-ink-700: #3d474c;

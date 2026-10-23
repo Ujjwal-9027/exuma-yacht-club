@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { MapPin, Phone, Radio } from "lucide-react";
+import { Mail, MapPin, MessageCircle, Phone, Radio } from "lucide-react";
 import { site } from "@/lib/site";
 import { getPublicContactSettings } from "@/lib/managed-site";
 import { isPlaceholder } from "@/config/site";
@@ -10,7 +10,7 @@ import { InquiryForm } from "@/components/inquiry-form";
 export const metadata: Metadata = {
   title: "Contact & Location",
   description:
-    "Contact Exuma Yacht Club & Marina in George Town, Great Exuma — phone, WhatsApp, VHF 16, directions and inquiries for dockage, stays, dining and fuel.",
+    "Contact Exuma Yacht Club Resort and Marina in George Town, Great Exuma — phone, email, WhatsApp, VHF 16, directions and inquiries for dockage, stays and fuel.",
   alternates: { canonical: "/contact" },
   openGraph: {
     title: "Contact · Exuma Yacht Club",
@@ -26,20 +26,20 @@ export default async function ContactPage() {
   const channels = [
     {
       icon: Phone,
-      label: "Marina & Dock Office",
+      label: "Hotel & Marina",
       value: contactSettings.marinaPhone,
       href: phoneHref(contactSettings.marinaPhone),
-      note: "Dockage, fuel & general inquiries",
+      note: "Hotel, dockage, fuel & general inquiries",
     },
     {
-      icon: Phone,
-      label: "Restaurant & Bar",
-      value: contactSettings.restaurantPhone,
-      href: phoneHref(contactSettings.restaurantPhone),
-      note: "Reservations & dining questions",
+      icon: Mail,
+      label: "Email",
+      value: contactSettings.businessEmail,
+      href: `mailto:${contactSettings.businessEmail}`,
+      note: "General inquiries",
     },
     {
-      icon: Phone,
+      icon: MessageCircle,
       label: "WhatsApp",
       value: contactSettings.whatsappLabel,
       href: contactSettings.whatsappNumber
@@ -60,7 +60,7 @@ export default async function ContactPage() {
       <PageHero
         overline="Contact & Location"
         title="Talk to the team"
-        lede="Questions about dockage, stays, dining, fuel or the gift shop — reach us by phone, WhatsApp, VHF or the form below."
+        lede="Questions about dockage, stays, fuel or the gift shop — reach us by phone, email, WhatsApp, VHF or the form below."
         image="/images/hero-marina-aerial.jpg"
         imageAlt="Aerial view of Elizabeth Harbour and the marina at Exuma Yacht Club"
       />

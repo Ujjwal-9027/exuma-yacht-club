@@ -4,13 +4,13 @@ import { DEFAULT_ORDER_STATUS_EMAIL_TEMPLATES } from "@/lib/order-email-template
 import { site } from "@/lib/site";
 
 const defaults = {
-  businessName: "Exuma Yacht Club & Marina",
-  contactEmail: "",
+  businessName: site.name,
+  contactEmail: site.email.label,
   resnexusBookingUrl: config.resnexusBookingUrl,
   dockwaUrl: config.dockwaUrl,
   whatsappNumber: config.whatsappNumber,
-  seoTitle: "Exuma Yacht Club & Marina",
-  seoDescription: "A boutique marina, hotel, restaurant and gift shop in George Town, Great Exuma.",
+  seoTitle: site.name,
+  seoDescription: site.description,
   homeHeroTitle: "Your Exuma escape starts here.",
   homeHeroLede: "Marina services, island stays, waterfront dining and essentials — all on the edge of Elizabeth Harbour.",
   addressStreet: site.address.street,
@@ -18,7 +18,6 @@ const defaults = {
   addressCountry: site.address.country,
   addressPoBox: site.address.poBox,
   marinaPhone: site.phone.label,
-  restaurantPhone: site.restaurantPhone.label,
   whatsappLabel: site.whatsapp.label,
   vhfChannel: site.vhf,
   googleMapsUrl: config.googleMapsUrl,
@@ -41,6 +40,14 @@ export async function getManagedSiteSettings() {
   return {
     ...defaults,
     ...storedValues,
+    businessName: site.name,
+    contactEmail: site.email.label,
+    addressStreet: site.address.street,
+    addressLocality: site.address.locality,
+    addressCountry: site.address.country,
+    marinaPhone: site.phone.label,
+    whatsappNumber: config.whatsappNumber,
+    whatsappLabel: site.whatsapp.label,
     orderStatusEmailTemplates: {
       ...DEFAULT_ORDER_STATUS_EMAIL_TEMPLATES,
       ...(stored.orderStatusEmailTemplates ?? {}),
@@ -55,7 +62,7 @@ export type PublicContactSettings = {
   addressCountry: string;
   addressPoBox: string;
   marinaPhone: string;
-  restaurantPhone: string;
+  businessEmail: string;
   whatsappLabel: string;
   whatsappNumber: string;
   vhfChannel: string;
@@ -73,7 +80,7 @@ export async function getPublicContactSettings(): Promise<PublicContactSettings>
     addressCountry: settings.addressCountry,
     addressPoBox: settings.addressPoBox,
     marinaPhone: settings.marinaPhone,
-    restaurantPhone: settings.restaurantPhone,
+    businessEmail: site.email.label,
     whatsappLabel: settings.whatsappLabel,
     whatsappNumber,
     vhfChannel: settings.vhfChannel,

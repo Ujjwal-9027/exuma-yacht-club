@@ -3,12 +3,11 @@
 import { useState, type FormEvent } from "react";
 import { CheckCircle2, Loader2, TriangleAlert } from "lucide-react";
 
-export type InquiryKind = "dockage" | "stay" | "dining" | "fuel" | "general";
+export type InquiryKind = "dockage" | "stay" | "fuel" | "general";
 
 const kindLabels: Record<InquiryKind, string> = {
   dockage: "Request Dockage",
   stay: "Stay Inquiry",
-  dining: "Dining Inquiry",
   fuel: "Fuel Inquiry",
   general: "Send Message",
 };
@@ -35,7 +34,7 @@ export function InquiryForm({
   const [error, setError] = useState<string>("");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const withDates = kind === "dockage" || kind === "stay" || kind === "dining";
+  const withDates = kind === "dockage" || kind === "stay";
   const isDockage = kind === "dockage";
   const isStay = kind === "stay";
 
@@ -57,7 +56,7 @@ export function InquiryForm({
     if (!fullName) nextErrors.fullName = "Please enter your full name.";
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
       nextErrors.email = "Please enter a valid email address.";
-    if (withDates && kind !== "dining" && arrivalDate && departureDate && departureDate <= arrivalDate) {
+    if (withDates && arrivalDate && departureDate && departureDate <= arrivalDate) {
       nextErrors.departureDate =
         "Departure must be after your arrival date.";
     }
@@ -120,8 +119,8 @@ export function InquiryForm({
         <p className="mt-3 max-w-md text-[15px] leading-relaxed text-ink-500">
           Our team reviews every inquiry personally and will respond as soon as
           possible. For urgent matters, call the dock office on{" "}
-          <a href="tel:+12423362578" className="font-semibold text-navy-900 underline decoration-gold-500 underline-offset-4">
-            +1 (242) 336-2578
+          <a href="tel:+12428286973" className="font-semibold text-navy-900 underline decoration-gold-500 underline-offset-4">
+            +1 (242) 828-6973
           </a>{" "}
           or hail us on VHF Channel 16.
         </p>
@@ -224,7 +223,7 @@ export function InquiryForm({
           />
         </div>
 
-        {(isStay || kind === "dining") && (
+        {isStay && (
           <div>
             <label htmlFor={`${kind}-partySize`} className="field-label">
               Party size
@@ -235,21 +234,7 @@ export function InquiryForm({
               type="text"
               inputMode="numeric"
               maxLength={10}
-              placeholder={kind === "dining" ? "e.g. 4 guests" : "e.g. 2 adults"}
-              className="field"
-            />
-          </div>
-        )}
-
-        {kind === "dining" && (
-          <div>
-            <label htmlFor={`${kind}-timeOfDay`} className="field-label">
-              Preferred time
-            </label>
-            <input
-              id={`${kind}-timeOfDay`}
-              name="timeOfDay"
-              type="time"
+              placeholder="e.g. 2 adults"
               className="field"
             />
           </div>
@@ -289,7 +274,7 @@ export function InquiryForm({
           <>
             <div>
               <label htmlFor={`${kind}-arrivalDate`} className="field-label">
-                {kind === "dining" ? "Preferred date" : "Estimated arrival"}
+                Estimated arrival
               </label>
               <input
                 id={`${kind}-arrivalDate`}
@@ -301,36 +286,34 @@ export function InquiryForm({
                 className="field"
               />
             </div>
-            {kind !== "dining" && (
-              <div>
-                <label htmlFor={`${kind}-departureDate`} className="field-label">
-                  Estimated departure
-                </label>
-                <input
-                  id={`${kind}-departureDate`}
-                  name="departureDate"
-                  type="date"
-                  min={arrival || today}
-                  value={departure}
-                  onChange={(e) => {
-                    setDeparture(e.target.value);
-                    if (errors.departureDate) {
-                      setErrors((prev) => ({ ...prev, departureDate: "" }));
-                    }
-                  }}
-                  className="field"
-                  aria-invalid={!!errors.departureDate}
-                  aria-describedby={
-                    errors.departureDate ? `${kind}-departureDate-error` : undefined
+            <div>
+              <label htmlFor={`${kind}-departureDate`} className="field-label">
+                Estimated departure
+              </label>
+              <input
+                id={`${kind}-departureDate`}
+                name="departureDate"
+                type="date"
+                min={arrival || today}
+                value={departure}
+                onChange={(e) => {
+                  setDeparture(e.target.value);
+                  if (errors.departureDate) {
+                    setErrors((prev) => ({ ...prev, departureDate: "" }));
                   }
-                />
-                {errors.departureDate && (
-                  <p id={`${kind}-departureDate-error`} className="mt-1.5 text-xs text-[#b3402e]">
-                    {errors.departureDate}
-                  </p>
-                )}
-              </div>
-            )}
+                }}
+                className="field"
+                aria-invalid={!!errors.departureDate}
+                aria-describedby={
+                  errors.departureDate ? `${kind}-departureDate-error` : undefined
+                }
+              />
+              {errors.departureDate && (
+                <p id={`${kind}-departureDate-error`} className="mt-1.5 text-xs text-[#b3402e]">
+                  {errors.departureDate}
+                </p>
+              )}
+            </div>
           </>
         )}
 

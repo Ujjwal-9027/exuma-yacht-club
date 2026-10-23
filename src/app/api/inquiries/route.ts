@@ -3,7 +3,7 @@ import { db } from "@/db";
 import { EMAIL_RE, clean, clientKey, rateLimitDb } from "@/lib/server-utils";
 import { notifyNewInquiry } from "@/lib/notifications";
 
-const VALID_TYPES = new Set(["dockage", "stay", "dining", "fuel", "general"]);
+const VALID_TYPES = new Set(["dockage", "stay", "fuel", "general"]);
 
 export async function POST(req: Request) {
   try {
@@ -43,7 +43,6 @@ export async function POST(req: Request) {
       );
     }
     if (
-      type !== "dining" &&
       arrivalDate &&
       departureDate &&
       departureDate <= arrivalDate

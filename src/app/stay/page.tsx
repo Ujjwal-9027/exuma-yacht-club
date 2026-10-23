@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { BedDouble, MapPin, UtensilsCrossed, Waves } from "lucide-react";
 import { site } from "@/lib/site";
 import {
@@ -14,7 +15,7 @@ import { getManagedSiteSettings } from "@/lib/managed-site";
 export const metadata: Metadata = {
   title: "Stay — Boutique Hotel",
   description:
-    "Comfortable accommodation at Exuma Yacht Club in George Town, Great Exuma, with suites and rooms near the marina and waterfront dining.",
+    "Comfortable accommodation at Exuma Yacht Club in George Town, Great Exuma, near the marina and a waterfront restaurant and bar planned to open in December 2026.",
   alternates: { canonical: "/stay" },
   openGraph: {
     title: "Stay · Exuma Yacht Club",
@@ -37,8 +38,8 @@ const highlights = [
   },
   {
     icon: UtensilsCrossed,
-    title: "Dine at the club",
-    text: "The on-site restaurant & bar serves Caribbean cuisine with an international twist, overlooking the harbour.",
+    title: "Waterfront dining",
+    text: "A newly renovated waterfront restaurant and bar is expected to open in December 2026.",
   },
   {
     icon: MapPin,
@@ -52,8 +53,9 @@ const lodgingJsonLd = {
   "@type": "LodgingBusiness",
   name: `${site.shortName} — Boutique Hotel`,
   description:
-    "Comfortable accommodation at Exuma Yacht Club in George Town, Great Exuma, near marina services and waterfront dining.",
-  telephone: "+1-242-336-2578",
+    "Comfortable accommodation at Exuma Yacht Club in George Town, Great Exuma, near marina services and a planned waterfront restaurant and bar.",
+  telephone: site.phone.href.replace("tel:", ""),
+  email: site.email.label,
   address: {
     "@type": "PostalAddress",
     streetAddress: site.address.street,
@@ -195,6 +197,12 @@ export default async function StayPage() {
                   Have a Question? Contact Us
                 </ButtonLink>
               </div>
+              <Link
+                href="/booking-cancellation"
+                className="mt-4 inline-block text-sm font-medium text-navy-900 underline decoration-gold-500 underline-offset-4 hover:text-gold-600"
+              >
+                Review external booking terms
+              </Link>
             </Reveal>
           </div>
         </Container>

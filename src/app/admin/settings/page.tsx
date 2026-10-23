@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { AdminShell } from "@/components/admin-shell";
 import { SettingsForm } from "./settings-form";
+import { PasswordResetForm } from "./password-reset-form";
 import { getManagedSiteSettings } from "@/lib/managed-site";
 
 export const dynamic = "force-dynamic";
@@ -34,6 +35,7 @@ export default async function AdminSettingsPage({
         </p>
       )}
       <SettingsForm values={settings} />
+      <PasswordResetForm />
     </AdminShell>
   );
 }

@@ -77,7 +77,7 @@ const exploreCards = [
   {
     overline: "The Restaurant",
     title: "Restaurant & Dining",
-    text: "Discover waterfront dining at Exuma Yacht Club, with restaurant details and dining information for your visit.",
+    text: "A newly renovated waterfront restaurant and bar is expected to open in December 2026.",
     image: "/images/dining.jpg",
     imageAlt: "Open-air waterfront restaurant and bar overlooking the marina",
     href: "/dining",
@@ -214,6 +214,11 @@ export default async function HomePage() {
                       <h3 className="mt-2 font-display text-xl text-navy-900">
                         {card.title}
                       </h3>
+                      {card.href === "/dining" && (
+                        <p className="mt-2 inline-flex w-fit rounded-full bg-brand-plum-700 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-white">
+                          Coming December 2026
+                        </p>
+                      )}
                       <p className="mt-2 text-sm leading-relaxed text-ink-500">
                         {card.text}
                       </p>
@@ -243,6 +248,14 @@ export default async function HomePage() {
                           aria-hidden="true"
                         />
                       </a>
+                    )}
+                    {card.href === "/marina" && (
+                      <Link
+                        href="/booking-cancellation"
+                        className="text-xs font-medium text-ink-500 underline decoration-sand-400 underline-offset-4 hover:text-navy-900"
+                      >
+                        Review booking terms
+                      </Link>
                     )}
                   </div>
                 </article>

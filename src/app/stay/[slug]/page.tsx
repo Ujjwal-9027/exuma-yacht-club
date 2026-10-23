@@ -147,6 +147,12 @@ export default async function RoomPage({ params }: Props) {
                   label="Book Now"
                   fallbackHref="/stay#stay-inquiry"
                 />
+                <Link
+                  href="/booking-cancellation"
+                  className="text-sm font-medium text-navy-900 underline decoration-gold-500 underline-offset-4 hover:text-gold-600"
+                >
+                  Review external booking terms
+                </Link>
               </Reveal>
             </div>
           </div>

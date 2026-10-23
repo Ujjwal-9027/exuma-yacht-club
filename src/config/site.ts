@@ -19,7 +19,7 @@ export const config = {
     "https://dockwa.com/explore/destination/4qcvwr-exuma-yacht-club?form=transient",
 
   /** WhatsApp click-to-chat number, digits only, with country code. */
-  whatsappNumber: "12428256973",
+  whatsappNumber: "12428286973",
 
   /** Default pre-filled WhatsApp message (URL-encoded automatically). */
   whatsappDefaultMessage:

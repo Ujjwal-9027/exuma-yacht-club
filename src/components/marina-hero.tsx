@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Phone } from "lucide-react";
 import { Container } from "@/components/ui";
@@ -85,6 +86,12 @@ export function MarinaHero({ dockwaUrl }: { dockwaUrl: string }) {
             Call the Dock Office
           </a>
         </div>
+        <Link
+          href="/booking-cancellation"
+          className="mt-4 inline-block text-sm font-medium text-ivory-50 underline decoration-gold-400 underline-offset-4 hover:text-gold-400"
+        >
+          Review external booking terms
+        </Link>
       </Container>
     </section>
   );

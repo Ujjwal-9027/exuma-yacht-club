@@ -306,6 +306,20 @@ export const db = {
       { upsert: true },
     );
   },
+  async getAdminPasswordHash(): Promise<string | null> {
+    const settings = await (await collection<SiteSettings>("settings")).findOne(
+      { id: "site" },
+      { projection: { adminPasswordHash: 1 } },
+    );
+    return settings?.adminPasswordHash ?? null;
+  },
+  async setAdminPasswordHash(adminPasswordHash: string): Promise<void> {
+    await (await collection<SiteSettings>("settings")).updateOne(
+      { id: "site" },
+      { $set: { adminPasswordHash, updatedAt: new Date() } },
+      { upsert: true },
+    );
+  },
   async dashboardStats() {
     const orders = collection<Order>("orders");
     const products = collection<Product>("products");

@@ -8,11 +8,11 @@
 
 export const aboutContent = {
   heroLede:
-    "A working marina, a boutique hotel, a waterfront restaurant and a gift shop — on the water's edge in George Town, the capital of the Exumas.",
+    "A working marina, a boutique hotel, a waterfront restaurant and bar planned for December 2026, and a gift shop — on the water's edge in George Town, the capital of the Exumas.",
   sections: [
     {
       title: "On the George Town waterfront",
-      body: "Exuma Yacht Club sits on Elizabeth Harbour in the heart of George Town — the main settlement of Great Exuma. The marina offers breakwater-protected dockage for vessels up to 120 ft, with shore power, fresh water and a fuel pier, while the boutique hotel, restaurant & bar and gift shop round out the club ashore.",
+      body: "Exuma Yacht Club sits on Elizabeth Harbour in the heart of George Town — the main settlement of Great Exuma. The marina offers breakwater-protected dockage for vessels up to 120 ft, with shore power, fresh water and a fuel pier. The club also offers accommodation and a gift shop, with a newly renovated waterfront restaurant and bar expected to open in December 2026.",
     },
     {
       title: "Newly renovated",

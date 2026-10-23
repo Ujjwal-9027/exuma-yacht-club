@@ -7,6 +7,7 @@ import { z } from "zod";
 import { db } from "@/db";
 import {
   clearAdminCookie,
+  hashPassword,
   isAdminAuthed,
   setAdminCookie,
   verifyPassword,
@@ -55,7 +56,7 @@ export async function loginAction(
     return { error: "Too many attempts. Please wait a minute and try again." };
   }
   const password = String(formData.get("password") ?? "");
-  if (!verifyPassword(password)) {
+  if (!(await verifyPassword(password))) {
     return { error: "Incorrect password." };
   }
   await setAdminCookie();
@@ -65,6 +66,31 @@ export async function loginAction(
 export async function logoutAction(): Promise<void> {
   await clearAdminCookie();
   redirect("/admin/login");
+}
+
+export async function resetAdminPasswordAction(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  await assertAdmin();
+  if (!process.env.MONGODB_URI) {
+    return { error: "Password reset requires MongoDB to be configured." };
+  }
+  const currentPassword = String(formData.get("currentPassword") ?? "");
+  const newPassword = String(formData.get("newPassword") ?? "");
+  const confirmPassword = String(formData.get("confirmPassword") ?? "");
+  if (!(await verifyPassword(currentPassword))) {
+    return { error: "The current password is incorrect." };
+  }
+  if (newPassword.length < 12) {
+    return { error: "The new password must be at least 12 characters." };
+  }
+  if (newPassword !== confirmPassword) {
+    return { error: "The new passwords do not match." };
+  }
+  await db.setAdminPasswordHash(await hashPassword(newPassword));
+  await clearAdminCookie();
+  redirect("/admin/login?reset=1");
 }
 
 async function assertAdmin(): Promise<void> {
@@ -402,7 +428,6 @@ export async function saveSiteSettingsAction(
     addressCountry: String(formData.get("addressCountry") ?? "").trim().slice(0, 120),
     addressPoBox: String(formData.get("addressPoBox") ?? "").trim().slice(0, 160),
     marinaPhone: String(formData.get("marinaPhone") ?? "").trim().slice(0, 60),
-    restaurantPhone: String(formData.get("restaurantPhone") ?? "").trim().slice(0, 60),
     whatsappLabel: String(formData.get("whatsappLabel") ?? "").trim().slice(0, 60),
     vhfChannel: String(formData.get("vhfChannel") ?? "").trim().slice(0, 60),
     googleMapsUrl: String(formData.get("googleMapsUrl") ?? "").trim().slice(0, 500),
@@ -418,6 +443,7 @@ export async function saveSiteSettingsAction(
     homeHeroTitle: current?.homeHeroTitle ?? "Your Exuma escape starts here.",
     homeHeroLede: current?.homeHeroLede ?? "Marina services, island stays, waterfront dining and essentials — all on the edge of Elizabeth Harbour.",
     orderStatusEmailTemplates,
+    ...(current?.adminPasswordHash ? { adminPasswordHash: current.adminPasswordHash } : {}),
   };
   if (!input.businessName || !input.seoTitle) return { error: "Business name and SEO title are required." };
   if ((input.inquiryNotificationEmail && !EMAIL_RE.test(input.inquiryNotificationEmail)) || (input.orderNotificationEmail && !EMAIL_RE.test(input.orderNotificationEmail))) {
@@ -463,14 +489,13 @@ export async function saveContentAction(
   await assertAdmin();
   const current = await db.getSiteSettings();
   const input = {
-    businessName: current?.businessName ?? "Exuma Yacht Club & Marina",
+    businessName: current?.businessName ?? "Exuma Yacht Club Resort and Marina",
     contactEmail: current?.contactEmail ?? "",
     addressStreet: current?.addressStreet ?? "",
     addressLocality: current?.addressLocality ?? "",
     addressCountry: current?.addressCountry ?? "",
     addressPoBox: current?.addressPoBox ?? "",
     marinaPhone: current?.marinaPhone ?? "",
-    restaurantPhone: current?.restaurantPhone ?? "",
     whatsappLabel: current?.whatsappLabel ?? "",
     vhfChannel: current?.vhfChannel ?? "",
     googleMapsUrl: current?.googleMapsUrl ?? "",
@@ -482,10 +507,11 @@ export async function saveContentAction(
     dockwaUrl: current?.dockwaUrl ?? "",
     whatsappNumber: current?.whatsappNumber ?? "",
     seoTitle: current?.seoTitle ?? "Exuma Yacht Club & Marina",
-    seoDescription: current?.seoDescription ?? "A boutique marina, hotel, restaurant and gift shop in George Town, Great Exuma.",
+    seoDescription: current?.seoDescription ?? "A marina and resort on Elizabeth Harbour in George Town, Great Exuma — dockage, island stays and waterfront dining.",
     homeHeroTitle: String(formData.get("homeHeroTitle") ?? "").trim().slice(0, 160),
     homeHeroLede: String(formData.get("homeHeroLede") ?? "").trim().slice(0, 320),
     orderStatusEmailTemplates: current?.orderStatusEmailTemplates ?? {},
+    ...(current?.adminPasswordHash ? { adminPasswordHash: current.adminPasswordHash } : {}),
   };
   if (!input.homeHeroTitle || !input.homeHeroLede) return { error: "Homepage heading and description are required." };
   await db.setSiteSettings(input);

@@ -17,7 +17,6 @@ export function SettingsForm({
     addressCountry?: string;
     addressPoBox?: string;
     marinaPhone?: string;
-    restaurantPhone?: string;
     whatsappLabel?: string;
     vhfChannel?: string;
     googleMapsUrl?: string;
@@ -75,18 +74,6 @@ export function SettingsForm({
             name="marinaPhone"
             type="tel"
             defaultValue={values.marinaPhone ?? ""}
-            className="field"
-          />
-        </div>
-        <div>
-          <label htmlFor="restaurantPhone" className="field-label">
-            Restaurant & Bar phone
-          </label>
-          <input
-            id="restaurantPhone"
-            name="restaurantPhone"
-            type="tel"
-            defaultValue={values.restaurantPhone ?? ""}
             className="field"
           />
         </div>

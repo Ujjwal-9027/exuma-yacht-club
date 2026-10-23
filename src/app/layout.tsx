@@ -57,7 +57,8 @@ function LocalBusinessJsonLd() {
     name: site.name,
     description: site.description,
     url: site.url,
-    telephone: "+1-242-336-2578",
+    telephone: site.phone.href.replace("tel:", ""),
+    email: site.email.label,
     address: {
       "@type": "PostalAddress",
       streetAddress: site.address.street,

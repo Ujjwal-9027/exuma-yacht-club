@@ -32,9 +32,9 @@ export const faqItems: FaqItem[] = [
       "Use the inquiry form on the Stay page with your dates, or choose Book Now where a booking link is configured. An inquiry is not a confirmed reservation — the team confirms availability and rates directly with you.",
   },
   {
-    question: "What are the restaurant's opening hours?",
+    question: "When is the restaurant and bar expected to open?",
     answer:
-      "The restaurant is typically open Monday through Saturday and closed on Sundays, but hours change with the season. Please call ahead to confirm before your visit.",
+      "The newly renovated waterfront restaurant and bar is expected to open in December 2026. It is leased to an independent operator; Exuma Yacht Club does not manage its daily operations or reservations.",
   },
   {
     question: "Can I order gift shop items online?",

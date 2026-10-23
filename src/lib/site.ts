@@ -1,15 +1,12 @@
 /**
- * Verified business information for Exuma Yacht Club & Marina.
- * Sources: official website (exumayachtclub.net), Waterway Guide,
- * public marina listings. Anything not yet confirmed by the client is
- * intentionally omitted (e.g. public business email, fuel prices).
+ * Client-confirmed business information for Exuma Yacht Club Resort and Marina.
  */
 export const site = {
-  name: "Exuma Yacht Club & Marina",
+  name: "Exuma Yacht Club Resort and Marina",
   shortName: "Exuma Yacht Club",
-  tagline: "Marina · Stay · Dining · George Town, Exuma",
+  tagline: "Marina · Stay · Waterfront dining · George Town, Exuma",
   description:
-    "A boutique marina and hotel on Elizabeth Harbour in George Town, Great Exuma — dockage, fuel, island stays, waterfront dining and a gift shop.",
+    "A marina and resort on Elizabeth Harbour in George Town, Great Exuma — dockage, island stays and waterfront dining.",
   url: "https://www.exumayachtclub.net",
   address: {
     street: "Queen's Highway",
@@ -18,21 +15,18 @@ export const site = {
     poBox: "P.O. Box EX-29173, George Town, Great Exuma",
   },
   phone: {
-    label: "+1 (242) 336-2578",
-    href: "tel:+12423362578",
-    note: "Marina & dock office",
-  },
-  restaurantPhone: {
-    label: "+1 (242) 336-2579",
-    href: "tel:+12423362579",
-    note: "Restaurant & bar",
+    label: "+1 (242) 828-6973",
+    href: "tel:+12428286973",
+    note: "Hotel & marina",
   },
   whatsapp: {
-    label: "+1 (242) 825-6973",
-    href: "https://wa.me/12428256973",
+    label: "+1 (242) 828-6973",
+    href: "https://wa.me/12428286973",
   },
-  /** Public business email is pending client confirmation. */
-  email: null as null | { label: string; href: string },
+  email: {
+    label: "info@exumayachtclub.net",
+    href: "mailto:info@exumayachtclub.net",
+  },
   vhf: "VHF Channel 16",
   coordinates: {
     lat: 23.5041,
@@ -52,13 +46,6 @@ export const site = {
     services: ["Shore power", "Fresh water", "Fuel pier — gas & diesel", "VHF Channel 16"],
     townNote:
       "Set on the waterfront in the heart of George Town — grocery and liquor stores are directly across the street.",
-  },
-  restaurant: {
-    name: "The Restaurant & Bar at Exuma Yacht Club",
-    cuisine: "Caribbean cuisine with an international twist",
-    hoursNote: "Typically open Monday–Saturday · Closed Sundays",
-    hoursDisclaimer:
-      "Hours change with the season — please call ahead to confirm before your visit.",
   },
 } as const;
 

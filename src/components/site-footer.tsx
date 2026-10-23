@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Mail, MapPin, Phone, Radio } from "lucide-react";
+import { Mail, MapPin, MessageCircle, Phone, Radio } from "lucide-react";
 import { site } from "@/lib/site";
 import type { PublicContactSettings } from "@/lib/managed-site";
 
@@ -79,9 +79,9 @@ export function SiteFooter({
               />
             </Link>
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-ivory-100/70">
-              A boutique marina and hotel on Elizabeth Harbour in George Town,
-              Great Exuma — dockage, fuel, island stays, waterfront dining and a
-              gift shop, all on the water&apos;s edge.
+              A marina and resort on Elizabeth Harbour in George Town, Great
+              Exuma — dockage, island stays and a gift shop, with a waterfront
+              restaurant and bar expected to open in December 2026.
             </p>
             <p className="mt-4 font-display text-sm tracking-[0.08em] text-gold-400">
               {site.coordinates.display}
@@ -190,12 +190,28 @@ export function SiteFooter({
                     {contactSettings.marinaPhone}
                   </a>
                   <span className="block text-xs text-ivory-100/50">
-                    Marina & dock office
+                    Hotel & marina
                   </span>
                 </span>
               </li>
               <li className="flex gap-3">
                 <Mail
+                  className="mt-0.5 h-4 w-4 shrink-0 text-gold-400"
+                  strokeWidth={1.6}
+                  aria-hidden="true"
+                />
+                <span>
+                  <a
+                    href={`mailto:${contactSettings.businessEmail}`}
+                    className="text-ivory-100/75 transition-colors hover:text-gold-400"
+                  >
+                    {contactSettings.businessEmail}
+                  </a>
+                  <span className="block text-xs text-ivory-100/50">Email</span>
+                </span>
+              </li>
+              <li className="flex gap-3">
+                <MessageCircle
                   className="mt-0.5 h-4 w-4 shrink-0 text-gold-400"
                   strokeWidth={1.6}
                   aria-hidden="true"
@@ -212,7 +228,7 @@ export function SiteFooter({
                     </a>
                   )}
                   <span className="block text-xs text-ivory-100/50">
-                    WhatsApp
+                    Hotel & marina WhatsApp
                   </span>
                 </span>
               </li>

@@ -47,14 +47,4 @@ export const policies: Record<string, PolicyContent> = {
       "PLACEHOLDER — client to supply this policy. The final text should state the pickup procedure and hold period for Collect at the dock orders, how shipping quotes are arranged, who pays shipping and duties, delivery time expectations, and the rules and timeframes for returns and exchanges with proof of purchase.",
     ],
   },
-  "booking-cancellation": {
-    slug: "booking-cancellation",
-    overline: "Legal",
-    title: "Booking & Cancellation Policy",
-    intro: "The terms that apply to dockage reservations, accommodation bookings and restaurant reservations.",
-    isPlaceholder: true,
-    body: [
-      "PLACEHOLDER — client to supply this policy. The final text should state deposit and confirmation requirements, how far in advance cancellations must be made for dockage, rooms and restaurant bookings, any fees for late cancellation or no-show, and how cancellations are requested.",
-    ],
-  },
 };

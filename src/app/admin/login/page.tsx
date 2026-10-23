@@ -10,11 +10,16 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function AdminLoginPage() {
+export default async function AdminLoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ reset?: string }>;
+}) {
   if (await isAdminAuthed()) {
     redirect("/admin");
   }
   const configured = adminConfigured();
+  const params = await searchParams;
 
   return (
     <section className="bg-ivory-50 py-20 lg:py-28">
@@ -28,6 +33,14 @@ export default async function AdminLoginPage() {
         <p className="mt-2 text-sm text-ink-500">
           Restricted to Exuma Yacht Club staff.
         </p>
+        {params.reset === "1" && (
+          <p
+            role="status"
+            className="mt-6 max-w-sm border border-green-700/30 bg-green-50 p-4 text-center text-sm text-green-900"
+          >
+            Password updated. Sign in with your new password.
+          </p>
+        )}
         {configured ? (
           <LoginForm />
         ) : (

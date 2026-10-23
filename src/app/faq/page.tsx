@@ -7,7 +7,7 @@ import { FaqAccordion } from "@/components/accordion";
 export const metadata: Metadata = {
   title: "FAQ",
   description:
-    "Frequently asked questions about Exuma Yacht Club — dockage, vessel sizes, fuel, rooms, restaurant hours, gift shop orders and getting to Exuma.",
+    "Frequently asked questions about Exuma Yacht Club — dockage, vessel sizes, fuel, rooms, dining plans, gift shop orders and getting to Exuma.",
   alternates: { canonical: "/faq" },
   openGraph: {
     title: "FAQ · Exuma Yacht Club",

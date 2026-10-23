@@ -1,6 +1,8 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { createHmac, timingSafeEqual } from "crypto";
+import { createHmac, randomBytes, scrypt, timingSafeEqual } from "crypto";
+import { promisify } from "util";
+import { db } from "@/db";
 
 /**
  * Admin authentication — a single shared password from ADMIN_PASSWORD,
@@ -26,13 +28,29 @@ function expectedToken(): string | null {
   return createHmac("sha256", s).update(TOKEN_SUBJECT).digest("hex");
 }
 
-export function verifyPassword(candidate: string): boolean {
+const scryptAsync = promisify(scrypt);
+
+export async function verifyPassword(candidate: string): Promise<boolean> {
+  const storedHash = process.env.MONGODB_URI ? await db.getAdminPasswordHash() : null;
+  if (storedHash) {
+    const [salt, encodedHash] = storedHash.split(":");
+    if (!salt || !encodedHash) return false;
+    const derivedKey = (await scryptAsync(candidate, salt, 64)) as Buffer;
+    const expectedKey = Buffer.from(encodedHash, "hex");
+    return expectedKey.length === derivedKey.length && timingSafeEqual(derivedKey, expectedKey);
+  }
   const password = process.env.ADMIN_PASSWORD;
   if (!password) return false;
   const a = Buffer.from(candidate);
   const b = Buffer.from(password);
   if (a.length !== b.length) return false;
   return timingSafeEqual(a, b);
+}
+
+export async function hashPassword(password: string): Promise<string> {
+  const salt = randomBytes(16).toString("hex");
+  const derivedKey = (await scryptAsync(password, salt, 64)) as Buffer;
+  return `${salt}:${derivedKey.toString("hex")}`;
 }
 
 export async function setAdminCookie(): Promise<void> {

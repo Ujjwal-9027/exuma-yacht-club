@@ -5,7 +5,7 @@ import { PolicyPage } from "@/components/policy-page";
 export const metadata: Metadata = {
   title: "Terms & Conditions",
   description:
-    "The terms governing use of the Exuma Yacht Club website, including inquiries, orders and website content.",
+    "Terms for using the Exuma Yacht Club Resort and Marina website and its merchandise ordering features.",
   alternates: { canonical: "/terms" },
 };
 

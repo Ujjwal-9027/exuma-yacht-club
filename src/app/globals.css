@@ -89,6 +89,12 @@ body {
   box-shadow: none !important;
 }
 
+.stay-explore-link,
+.stay-explore-link:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
 button.header-plain:hover {
   transform: none !important;
   box-shadow: none !important;
@@ -164,6 +170,71 @@ button.header-plain:hover {
   background: var(--color-gold-500);
 }
 
+.amenity-tile {
+  box-shadow: 0 3px 0 rgba(12, 39, 51, 0.12), 0 6px 10px rgba(12, 39, 51, 0.05);
+  transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+}
+
+.amenity-tile:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-gold-500);
+  box-shadow: 0 5px 0 rgba(176, 141, 87, 0.35), 0 12px 18px rgba(12, 39, 51, 0.12);
+}
+
+.attraction-card {
+  transform-style: preserve-3d;
+  box-shadow: 0 3px 0 rgba(12, 39, 51, 0.12), 0 8px 18px rgba(12, 39, 51, 0.07);
+  transition: transform 350ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 350ms cubic-bezier(0.22, 1, 0.36, 1), border-color 200ms ease;
+}
+
+.attraction-card:focus-within {
+  border-color: var(--color-gold-500);
+}
+
+.attraction-card-detail {
+  margin-top: 1rem;
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+@media (min-width: 64rem) {
+  .attraction-card-detail {
+    margin-top: 0;
+    grid-template-rows: 0fr;
+    opacity: 0;
+  }
+
+  .attraction-card:hover .attraction-card-detail,
+  .attraction-card:focus-visible .attraction-card-detail,
+  .attraction-card:focus-within .attraction-card-detail {
+    margin-top: 1rem;
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .attraction-card:hover {
+    transform: perspective(1100px) rotateX(1.5deg) rotateY(-1.5deg) translateY(-4px);
+    box-shadow: 0 6px 0 rgba(176, 141, 87, 0.3), 0 18px 30px rgba(12, 39, 51, 0.14);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .amenity-tile,
+  .amenity-tile:hover {
+    transform: none;
+    transition: none;
+  }
+
+  .attraction-card,
+  .attraction-card:hover {
+    transform: none;
+    transition: none;
+  }
+}
+
 /* Shared surface treatment for cards and bordered panels. */
 .border-sand-300.bg-white,
 .border-sand-300.bg-ivory-100,
@@ -181,6 +252,26 @@ button.header-plain:hover {
 }
 .img-zoom:hover img {
   transform: scale(1.045);
+}
+
+.hero-image-3d {
+  transform-style: preserve-3d;
+  transition: transform 500ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .hero-image-3d:hover {
+    transform: perspective(1100px) rotateX(2deg) rotateY(-2.5deg) translateY(-4px);
+    box-shadow: 0 20px 38px rgba(12, 39, 51, 0.18);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-image-3d {
+    transform: none;
+    transition: none;
+  }
 }
 
 .merchandise-card {

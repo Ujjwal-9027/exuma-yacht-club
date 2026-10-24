@@ -48,7 +48,9 @@ function paymentStatusLabel(order: Order): string {
   if (status === "pending") return "Payment pending";
   if (status === "refunded") return "Refunded";
   if (status === "failed") return "Payment failed";
-  if (order.paymentMethod === "at_pickup") return "Pay at pickup";
+  if (order.paymentMethod === "at_pickup") {
+    return order.fulfillment === "ship" ? "Payment to be arranged" : "Pay at pickup";
+  }
   return status ? status.charAt(0).toUpperCase() + status.slice(1) : "Not available";
 }
 

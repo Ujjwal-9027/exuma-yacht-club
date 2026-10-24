@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { CarTaxiFront, MapPin, Plane, Sailboat } from "lucide-react";
+import { MapPin } from "lucide-react";
 import { site } from "@/lib/site";
 import { gettingHereContent } from "@/data/pages";
 import { config, isPlaceholder } from "@/config/site";
 import { Container, PageHero, SectionHeading } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
+import { DifferenceCardGrid } from "@/components/difference-card-grid";
 
 export const metadata: Metadata = {
   title: "Getting Here",
@@ -14,16 +15,34 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Getting Here · Exuma Yacht Club",
     description: "By sea, by air, by taxi — three easy ways to reach the club.",
-    images: ["/images/hero-marina-aerial.jpg"],
+    images: ["/images/getting-here-hero.jpg"],
   },
 };
 
 export default function GettingHerePage() {
   const modes = [
-    { icon: Sailboat, ...gettingHereContent.bySea },
-    { icon: Plane, ...gettingHereContent.byAir },
-    { icon: CarTaxiFront, ...gettingHereContent.byRoad },
-  ];
+    {
+      icon: "ship",
+      title: gettingHereContent.bySea.title,
+      highlight: "Enter Elizabeth Harbour",
+      description: "Hail the dock office on VHF Channel 16 as you approach.",
+      detail: gettingHereContent.bySea.body,
+    },
+    {
+      icon: "compass",
+      title: gettingHereContent.byAir.title,
+      highlight: "Exuma International · GGT",
+      description: "Regional and international connections vary by season.",
+      detail: gettingHereContent.byAir.body,
+    },
+    {
+      icon: "location",
+      title: gettingHereContent.byRoad.title,
+      highlight: "About 15–20 minutes",
+      description: "Taxis meet arriving flights at the airport terminal.",
+      detail: gettingHereContent.byRoad.body,
+    },
+  ] as const;
 
   return (
     <>
@@ -31,8 +50,8 @@ export default function GettingHerePage() {
         overline="Getting Here"
         title="Three ways to arrive"
         lede={gettingHereContent.heroLede}
-        image="/images/hero-marina-aerial.jpg"
-        imageAlt="Aerial approach to Elizabeth Harbour and George Town"
+        image="/images/getting-here-hero.jpg"
+        imageAlt="Exuma Yacht Club sign surrounded by palm trees"
       />
 
       <section aria-labelledby="routes-heading" className="py-20 lg:py-24">
@@ -40,28 +59,15 @@ export default function GettingHerePage() {
           <h2 id="routes-heading" className="sr-only">
             Travel options
           </h2>
-          <div className="grid gap-6 lg:grid-cols-3">
-            {modes.map((mode, i) => (
-              <Reveal key={mode.title} delay={i * 80}>
-                <article className="flex h-full flex-col border border-sand-300 bg-white p-8">
-                  <span className="grid h-12 w-12 place-items-center rounded-full border border-gold-500/50 text-gold-600">
-                    <mode.icon className="h-6 w-6" strokeWidth={1.5} aria-hidden="true" />
-                  </span>
-                  <h3 className="mt-5 font-display text-2xl text-navy-900">
-                    {mode.title}
-                  </h3>
-                  <p className="mt-3 text-[15px] leading-relaxed text-ink-700">
-                    {mode.body}
-                  </p>
-                </article>
-              </Reveal>
-            ))}
-          </div>
+          <DifferenceCardGrid cards={modes} layout="compact" />
         </Container>
       </section>
 
       {/* Map + address */}
-      <section aria-labelledby="map-heading" className="border-t border-sand-200 bg-ivory-100 py-20 lg:py-24">
+      <section
+        aria-labelledby="map-heading"
+        className="border-t border-sand-200 bg-ivory-100 py-20 lg:py-24"
+      >
         <Container>
           <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
             <div>
@@ -73,7 +79,10 @@ export default function GettingHerePage() {
               <h2 id="map-heading" className="sr-only">
                 Map and directions
               </h2>
-              <Reveal delay={120} className="mt-8 flex flex-wrap items-center gap-5">
+              <Reveal
+                delay={120}
+                className="mt-8 flex flex-wrap items-center gap-5"
+              >
                 {isPlaceholder(config.googleMapsUrl) ? (
                   <span
                     aria-disabled="true"

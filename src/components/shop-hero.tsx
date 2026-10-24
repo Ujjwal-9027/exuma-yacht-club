@@ -1,68 +1,50 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { ArrowDown } from "lucide-react";
 import { Container } from "@/components/ui";
-
-const slides = [
-  {
-    src: "/images/shop-hero.webp",
-    alt: "Exuma Yacht Club caps on a beach",
-  },
-  {
-    src: "/images/shop-hero-3.jpg",
-    alt: "Exuma Yacht Club merchandise collection",
-  },
-  {
-    src: "/images/shop-hero-4.webp",
-    alt: "Exuma Yacht Club merchandise collection",
-  },
-] as const;
+import { ButtonLink } from "@/components/ui";
 
 export function ShopHero() {
-  const [activeSlide, setActiveSlide] = useState(0);
-
-  useEffect(() => {
-    const interval = window.setInterval(() => {
-      setActiveSlide((current) => (current + 1) % slides.length);
-    }, 5000);
-
-    return () => window.clearInterval(interval);
-  }, []);
-
   return (
-    <section className="relative flex min-h-[46vh] items-end overflow-hidden bg-navy-950 sm:min-h-[54vh]">
-      {slides.map((slide, index) => (
-        <Image
-          key={slide.src}
-          src={slide.src}
-          alt={index === activeSlide ? slide.alt : ""}
-          fill
-          priority={index === 0}
-          loading="eager"
-          sizes="100vw"
-          aria-hidden={index !== activeSlide}
-          className={`object-cover object-center transition-opacity duration-1000 ${
-            index === activeSlide ? "opacity-100" : "opacity-0"
-          }`}
-        />
-      ))}
-      <div
-        className="absolute inset-0 bg-gradient-to-t from-navy-950/90 via-navy-950/40 to-navy-950/15"
-        aria-hidden="true"
-      />
-      <Container className="relative w-full pb-14 pt-32 sm:pb-20">
-        <p className="overline-label !text-gold-400">
-          Merchandise &amp; Gift Shop
-        </p>
-        <h1 className="mt-4 max-w-3xl font-display text-3xl leading-[1.08] font-medium text-ivory-50 sm:text-5xl lg:text-6xl">
-          The club collection
-        </h1>
-        <p className="mt-5 max-w-2xl text-base leading-relaxed text-ivory-100/80 sm:text-lg">
-          Club apparel and island essentials. Place your order online and pay
-          securely with PayPal or debit or credit card. Choose delivery or
-          collect your order at the marina gift shop.
-        </p>
+    <section
+      aria-labelledby="shop-hero-title"
+      className="border-b border-sand-200 bg-ivory-100"
+    >
+      <Container className="grid items-center gap-7 py-7 sm:gap-10 sm:py-10 lg:grid-cols-2 lg:gap-12 lg:py-14 xl:gap-16">
+        <figure className="hero-image-3d order-1 relative aspect-[3/2] overflow-hidden rounded-lg border border-sand-300 bg-sand-200 lg:order-2">
+          <Image
+            src="/images/shop-hero.webp"
+            alt="Exuma Yacht Club caps in bright island colors arranged on a sandy beach."
+            fill
+            priority
+            sizes="(min-width: 1024px) 58vw, 100vw"
+            className="object-cover"
+          />
+        </figure>
+        <div className="order-2 max-w-xl py-2 lg:order-1 lg:py-4">
+          <p className="overline-label">Merchandise · Exuma Yacht Club</p>
+          <h1
+            id="shop-hero-title"
+            className="mt-4 font-display text-4xl leading-[1.08] font-medium text-navy-900 sm:text-5xl xl:text-6xl"
+          >
+            A little piece of Exuma
+          </h1>
+          <p className="mt-5 max-w-lg text-base leading-relaxed text-ink-700 sm:text-lg">
+            Club apparel and island essentials for days on and off the water.
+            Order online, then choose shipping or collection at the marina gift
+            shop.
+          </p>
+          <div className="mt-7 flex flex-wrap items-center gap-4">
+            <ButtonLink href="#products-heading" variant="gold">
+              Shop the collection
+              <ArrowDown className="h-4 w-4" aria-hidden="true" />
+            </ButtonLink>
+            <p className="text-sm leading-relaxed text-ink-500">
+              Choose marina collection or shipping at checkout.
+            </p>
+          </div>
+        </div>
       </Container>
     </section>
   );

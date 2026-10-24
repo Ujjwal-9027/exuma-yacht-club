@@ -55,6 +55,7 @@ export const destinationContent = {
 export type Attraction = {
   name: string;
   description: string;
+  detail: string;
   note?: string;
 };
 
@@ -63,38 +64,52 @@ export const attractions: Attraction[] = [
     name: "Swimming Pigs at Big Major Cay",
     description:
       "Exuma's most famous residents — a colony of swimming pigs that paddle out to greet boats at Big Major Cay in the central cays.",
+    detail:
+      "Big Major Cay is in the central Exumas. Visits are reached by organised boat tours; ask the team about trusted local operators and current arrangements.",
     note: "Reached on organised boat tours; ask the team about local operators.",
   },
   {
     name: "Stocking Island",
     description:
       "The long barrier island directly across Elizabeth Harbour — beaches, walking trails and well-known beach bars, minutes away by boat.",
+    detail:
+      "Stocking Island sits across the harbour from George Town. Ask locally about current boat transport and access before setting out.",
   },
   {
     name: "Chat 'N' Chill",
     description:
       "The legendary beach bar and grill on Stocking Island, famous for its conch bar and Sunday roasts.",
+    detail:
+      "The venue is on Stocking Island. Check directly with the operator for current hours, service and transport information.",
   },
   {
     name: "Thunderball Grotto",
     description:
       "A tidal cave near Staniel Cay where you can snorkel inside a hollow rock island — named for the James Bond film shot there.",
+    detail:
+      "The grotto is near Staniel Cay and is usually visited on a full-day boat tour. Ask local operators about current routes and conditions.",
     note: "Usually visited on full-day boat tours.",
   },
   {
     name: "Exuma Cays Land and Sea Park",
     description:
       "A vast protected area at the northern end of the cays with pristine reefs, anchorages and trails — no fishing, all wonder.",
+    detail:
+      "Fishing is not allowed in the park. Check current park guidance for access and visitor rules before travelling.",
   },
   {
     name: "Tropic of Cancer Beach",
     description:
       "A celebrated beach on Little Exuma, crossed by the Tropic of Cancer itself — white sand and shallow clear water.",
+    detail:
+      "The beach is on Little Exuma. Plan your route and check local weather and sea conditions before setting out.",
   },
   {
     name: "George Town Harbour Life",
     description:
       "Regattas, the famous winter cruising community, and the straw market and shops of George Town — the social heart of the Exumas.",
+    detail:
+      "Regatta dates and other local events vary by season. Ask locally for current event information and shop hours.",
   },
 ];
 

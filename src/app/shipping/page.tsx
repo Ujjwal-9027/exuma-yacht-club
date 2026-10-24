@@ -5,7 +5,7 @@ import { PolicyPage } from "@/components/policy-page";
 export const metadata: Metadata = {
   title: "Shipping & Returns",
   description:
-    "How Exuma Yacht Club gift shop orders are collected, shipped on request, and returned or exchanged.",
+    "Shipping, delivery, returns and exchange information for Exuma Yacht Club merchandise orders.",
   alternates: { canonical: "/shipping" },
 };
 

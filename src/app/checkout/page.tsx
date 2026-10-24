@@ -4,8 +4,7 @@ import { CheckoutForm } from "@/components/checkout-form";
 
 export const metadata: Metadata = {
   title: "Checkout",
-  description:
-    "Place your Exuma Yacht Club gift shop order — pay securely with PayPal or debit or credit card.",
+  description: "Place an order from the Exuma Yacht Club gift shop.",
   robots: { index: false },
 };
 

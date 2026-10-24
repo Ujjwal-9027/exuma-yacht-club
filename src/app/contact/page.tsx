@@ -61,7 +61,7 @@ export default async function ContactPage() {
         overline="Contact & Location"
         title="Talk to the team"
         lede="Questions about dockage, stays, fuel or the gift shop — reach us by phone, email, WhatsApp, VHF or the form below."
-        image="/images/hero-marina-aerial.jpg"
+        image="/images/contact-hero.jpg"
         imageAlt="Aerial view of Elizabeth Harbour and the marina at Exuma Yacht Club"
       />
 

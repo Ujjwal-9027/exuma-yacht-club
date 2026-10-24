@@ -1,13 +1,17 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { cookies } from "next/headers";
 import { CheckCircle2, MapPin, Phone } from "lucide-react";
 import { db } from "@/db";
+import { isAdminAuthed } from "@/lib/admin-auth";
 import { site } from "@/lib/site";
 import { formatMoney } from "@/lib/format";
 import { ButtonLink, Container } from "@/components/ui";
 import { ReceiptActions } from "@/components/receipt-actions";
+import { OrderAccessForm } from "@/components/order-access-form";
 import { PAYMENT_REFERENCE_PLACEHOLDER, toReceiptData } from "@/lib/receipt";
+import { hasOrderAccess, orderAccessCookieName } from "@/lib/order-access";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -24,17 +28,19 @@ const STATUS_LABELS: Record<string, string> = {
   cancelled: "Cancelled",
 };
 
-/**
- * Confirmation is only shown for orders that actually exist in the database —
- * unknown order numbers return a 404. No payment is simulated: this flow is
- * supports both pay-at-pickup and verified PayPal payments.
- */
+/** Confirmation is shown only for orders that exist in the database. */
 export default async function OrderPage({ params }: Props) {
   const { orderNumber } = await params;
   if (!/^EYC-[A-Z0-9]+$/.test(orderNumber)) notFound();
 
   const order = await db.getOrderByNumber(orderNumber);
-  if (!order) notFound();
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get(
+    orderAccessCookieName(orderNumber),
+  )?.value;
+  if (!hasOrderAccess(order, accessToken, await isAdminAuthed())) {
+    return <OrderAccessForm orderNumber={orderNumber} />;
+  }
 
   return (
     <section className="py-14 lg:py-20">
@@ -54,7 +60,9 @@ export default async function OrderPage({ params }: Props) {
             at{" "}
             <span className="font-semibold text-navy-900">{order.email}</span>.
             {order.paymentMethod === "at_pickup"
-              ? "Please pay when you collect at the marina gift shop."
+              ? order.fulfillment === "ship"
+                ? "We will contact you to arrange payment for shipping."
+                : "Please pay when you collect at the marina gift shop."
               : order.paymentMethod === "demo_card"
                 ? "Your demo debit-card payment has been recorded."
                 : "Your demo PayPal payment has been recorded."}
@@ -134,7 +142,9 @@ export default async function OrderPage({ params }: Props) {
                 </dt>
                 <dd className="mt-1 text-ink-700">
                   {order.paymentMethod === "at_pickup"
-                    ? "Due at pickup"
+                    ? order.fulfillment === "ship"
+                      ? "To be arranged"
+                      : "Due at pickup"
                     : order.paymentMethod === "demo_card"
                       ? "Demo debit card"
                       : "Demo PayPal"}

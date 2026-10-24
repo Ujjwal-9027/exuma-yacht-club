@@ -7,34 +7,50 @@ import type {
   Product,
   SiteSettings,
 } from "./schema";
+import { reserveProductStock } from "./inventory";
+import { getOrCreatePromise } from "./single-flight";
 
 const globalForDb = globalThis as typeof globalThis & {
   __exumaMongoClient?: MongoClient;
   __exumaMongoDb?: Db;
+  __exumaMongoDbPromise?: Promise<Db>;
 };
 
 function client(): MongoClient {
   const databaseUrl = process.env.MONGODB_URI;
   if (!databaseUrl) throw new Error("MONGODB_URI is required. Add it to .env.local and restart Next.js.");
   const mongoClient = globalForDb.__exumaMongoClient ?? new MongoClient(databaseUrl);
-  if (process.env.NODE_ENV !== "production") globalForDb.__exumaMongoClient = mongoClient;
+  globalForDb.__exumaMongoClient = mongoClient;
   return mongoClient;
 }
 
+async function connectDatabase(): Promise<Db> {
+  const mongoClient = client();
+  await mongoClient.connect();
+  const database = mongoClient.db(process.env.MONGODB_DB ?? "exuma_yacht_club");
+  await Promise.all([
+    database.collection("products").createIndex({ slug: 1 }, { unique: true }),
+    database.collection("orders").createIndex({ orderNumber: 1 }, { unique: true }),
+    database.collection("settings").createIndex({ id: 1 }, { unique: true }),
+    database.collection("inquiries").createIndex({ createdAt: -1, type: 1, status: 1 }),
+    database.collection("rate_limits").createIndex({ resetAt: 1 }, { expireAfterSeconds: 0 }),
+  ]);
+  return database;
+}
+
 async function database(): Promise<Db> {
-  if (!globalForDb.__exumaMongoDb) {
-    const mongoClient = client();
-    await mongoClient.connect();
-    globalForDb.__exumaMongoDb = mongoClient.db(process.env.MONGODB_DB ?? "exuma_yacht_club");
-    await Promise.all([
-      globalForDb.__exumaMongoDb.collection("products").createIndex({ slug: 1 }, { unique: true }),
-      globalForDb.__exumaMongoDb.collection("orders").createIndex({ orderNumber: 1 }, { unique: true }),
-      globalForDb.__exumaMongoDb.collection("settings").createIndex({ id: 1 }, { unique: true }),
-      globalForDb.__exumaMongoDb.collection("inquiries").createIndex({ createdAt: -1, type: 1, status: 1 }),
-      globalForDb.__exumaMongoDb.collection("rate_limits").createIndex({ resetAt: 1 }, { expireAfterSeconds: 0 }),
-    ]);
-  }
-  return globalForDb.__exumaMongoDb;
+  if (globalForDb.__exumaMongoDb) return globalForDb.__exumaMongoDb;
+  return getOrCreatePromise(
+    () => globalForDb.__exumaMongoDbPromise,
+    (promise) => {
+      globalForDb.__exumaMongoDbPromise = promise;
+    },
+    async () => {
+      const connectedDatabase = await connectDatabase();
+      globalForDb.__exumaMongoDb = connectedDatabase;
+      return connectedDatabase;
+    },
+  );
 }
 
 async function collection<T extends Document>(name: string): Promise<Collection<T>> {
@@ -123,29 +139,13 @@ export const db = {
     return collection<Product>("products").then((c) => c.find({ slug: { $in: slugs } }).toArray().then((products) => products.map(stripMongoId)));
   },
   async reserveProductStock(slug: string, quantity: number, size?: string | null, color?: string | null): Promise<boolean> {
-    const products = await collection<Product>("products");
-    if (size || color) {
-      const variant = await products.updateOne(
-        {
-          slug,
-          active: true,
-          variants: { $elemMatch: { size: size ?? null, color: color ?? null, stockQty: { $gte: quantity } } },
-        },
-        { $inc: { "variants.$.stockQty": -quantity }, $set: { updatedAt: new Date() } },
-      );
-      if (variant.matchedCount > 0) return true;
-    }
-    const tracked = await products.updateOne(
-      { slug, active: true, trackInventory: true, stockQty: { $gte: quantity } },
-      { $inc: { stockQty: -quantity }, $set: { updatedAt: new Date() } },
+    return reserveProductStock(
+      await collection<Product>("products"),
+      slug,
+      quantity,
+      size,
+      color,
     );
-    if (tracked.matchedCount > 0) return true;
-    const product = await products.findOne({ slug, active: true }, { projection: { trackInventory: 1, variants: 1 } });
-    if (size || color) {
-      const hasVariants = Boolean(product?.variants?.length);
-      if (hasVariants) return false;
-    }
-    return Boolean(product && product.trackInventory !== true);
   },
   async releaseProductStock(slug: string, quantity: number, size?: string | null, color?: string | null): Promise<void> {
     const products = await collection<Product>("products");
@@ -280,6 +280,39 @@ export const db = {
   },
   async getOrderByNumber(orderNumber: string): Promise<Order | null> {
     return collection<Order>("orders").then((c) => c.findOne({ orderNumber }));
+  },
+  async setOrderAccessCode(id: number, codeHash: string, expiresAt: Date): Promise<void> {
+    await (await collection<Order>("orders")).updateOne(
+      { id },
+      {
+        $set: {
+          customerAccessCodeHash: codeHash,
+          customerAccessCodeExpiresAt: expiresAt,
+        },
+      },
+    );
+  },
+  async consumeOrderAccessCode(
+    id: number,
+    codeHash: string,
+    now: Date,
+    accessTokenHash: string,
+  ): Promise<boolean> {
+    const result = await (await collection<Order>("orders")).updateOne(
+      {
+        id,
+        customerAccessCodeHash: codeHash,
+        customerAccessCodeExpiresAt: { $gt: now },
+      },
+      {
+        $set: { customerAccessTokenHash: accessTokenHash, updatedAt: now },
+        $unset: {
+          customerAccessCodeHash: "",
+          customerAccessCodeExpiresAt: "",
+        },
+      },
+    );
+    return result.matchedCount > 0;
   },
   async listOrders(filters: { q?: string; status?: string; paymentStatus?: string; limit?: number } = {}): Promise<Order[]> {
     const query: Record<string, unknown> = {};

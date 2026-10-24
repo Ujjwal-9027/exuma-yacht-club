@@ -125,6 +125,9 @@ export type Order = {
   status: string;
   paymentMethod: string;
   paymentStatus: string;
+  customerAccessTokenHash?: string;
+  customerAccessCodeHash?: string;
+  customerAccessCodeExpiresAt?: Date;
   cancellationReason?: string | null;
   fulfillmentStatus?: string;
   shippingCarrier?: string | null;

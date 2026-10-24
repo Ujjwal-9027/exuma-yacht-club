@@ -5,12 +5,18 @@ import { EMAIL_RE, clean, clientKey, rateLimitDb } from "@/lib/server-utils";
 import { getPaymentProvider } from "@/lib/payments";
 import { getShippingFeeCents, type DeliverySpeed } from "@/lib/shipping";
 import { notifyNewOrder, sendOrderConfirmationToCustomer } from "@/lib/notifications";
-import { randomBytes } from "crypto";
+import { randomBytes } from "node:crypto";
 import { findProductVariant, getCurrentPriceCents } from "@/lib/product-utils";
+import {
+  createOrderAccessToken,
+  hashOrderAccessToken,
+  orderAccessCookieName,
+  ORDER_ACCESS_COOKIE_MAX_AGE,
+} from "@/lib/order-access";
 
 function makeOrderNumber(): string {
   const stamp = Date.now().toString(36).toUpperCase().slice(-6);
-  const rand = randomBytes(3).toString("hex").toUpperCase();
+  const rand = randomBytes(16).toString("hex").toUpperCase();
   return `EYC-${stamp}${rand}`;
 }
 
@@ -57,6 +63,13 @@ export async function POST(req: Request) {
 
     if (clean(body.companyWebsite, 200)) {
       return NextResponse.json({ ok: true, orderNumber: "EYC-IGNORED" });
+    }
+
+    if (body.demoPayment === true && process.env.NODE_ENV === "production") {
+      return NextResponse.json(
+        { ok: false, error: "Demo payments are not available in production." },
+        { status: 400 },
+      );
     }
 
     const customerName = clean(body.customerName, 120);
@@ -197,6 +210,7 @@ export async function POST(req: Request) {
     }
 
     const orderNumber0 = makeOrderNumber();
+    const accessToken = createOrderAccessToken();
     const checkout = demoPayment
       ? { paymentMethod: demoPaymentMethod, paymentStatus: "paid" as const }
       : await getPaymentProvider().createCheckout({
@@ -235,15 +249,24 @@ export async function POST(req: Request) {
             status: "pending",
             paymentMethod: checkout.paymentMethod,
             paymentStatus: checkout.paymentStatus,
+            customerAccessTokenHash: hashOrderAccessToken(accessToken),
           });
         orderPersisted = true;
         await notifyNewOrder(created);
         await sendOrderConfirmationToCustomer(created);
-        return NextResponse.json({
+        const response = NextResponse.json({
           ok: true,
           orderNumber,
           redirectUrl: checkout.redirectUrl ?? null,
         });
+        response.cookies.set(orderAccessCookieName(orderNumber), accessToken, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
+          path: "/",
+          maxAge: ORDER_ACCESS_COOKIE_MAX_AGE,
+        });
+        return response;
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
         if (!message.includes("unique")) {
@@ -262,7 +285,10 @@ export async function POST(req: Request) {
     if (!orderPersisted) {
       for (const reservedItem of reserved) await db.releaseProductStock(reservedItem.slug, reservedItem.qty, reservedItem.size, reservedItem.color);
     }
-    console.error("Order creation failed:", err);
+    console.error(
+      "Order creation failed:",
+      err instanceof Error ? err.name : "Unknown error",
+    );
     return NextResponse.json(
       {
         ok: false,

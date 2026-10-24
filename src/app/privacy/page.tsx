@@ -5,7 +5,7 @@ import { PolicyPage } from "@/components/policy-page";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
-    "How Exuma Yacht Club collects, uses and protects the personal information you share through this website.",
+    "How Exuma Yacht Club Resort and Marina uses information submitted through its website, enquiries and merchandise orders.",
   alternates: { canonical: "/privacy" },
 };
 

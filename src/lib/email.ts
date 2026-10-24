@@ -7,7 +7,7 @@
  *   SMTP_HOST / SMTP_PORT / SMTP_SECURE
  *   SMTP_USER / SMTP_PASSWORD
  *   RESEND_API_KEY   — server-side secret
- *   NOTIFY_EMAIL     — staff inbox that receives inquiry/order alerts
+ *   Notification recipients are configured in admin site settings.
  *   EMAIL_FROM       — verified sender (e.g. "Exuma Yacht Club <orders@yourdomain.com>")
  *
  * If any are missing, every send() logs a warning and resolves without
@@ -114,7 +114,7 @@ export async function sendNotification(message: EmailMessage): Promise<void> {
       );
       warned = true;
     }
-    console.info(`[email:dev] "${message.subject}" → ${target ?? "(no NOTIFY_EMAIL)"}`);
+    console.info(`[email:dev] "${message.subject}" → ${target ?? "(no recipient)"}`);
     return;
   }
   try {

@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Phone } from "lucide-react";
 import { Container } from "@/components/ui";
 import { site } from "@/lib/site";
-import { MarinaBookingTransition } from "@/components/marina-booking-transition";
+import { BookingTransitionLink } from "@/components/booking-transition-link";
 
 const images = [
   {
@@ -76,7 +76,10 @@ export function MarinaHero({ dockwaUrl }: { dockwaUrl: string }) {
         </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           {!bottomBookingVisible && (
-            <MarinaBookingTransition dockwaUrl={dockwaUrl} />
+            <BookingTransitionLink
+              bookingUrl={dockwaUrl}
+              ariaLabel="Book marina dockage through Dockwa"
+            />
           )}
           <a
             href={site.phone.href}

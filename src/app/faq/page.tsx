@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { faqItems } from "@/data/faq";
-import { ButtonLink, Container, PageHero, SectionHeading } from "@/components/ui";
+import {
+  ButtonLink,
+  Container,
+  PageHero,
+  SectionHeading,
+} from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { FaqAccordion } from "@/components/accordion";
 
@@ -11,7 +16,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/faq" },
   openGraph: {
     title: "FAQ · Exuma Yacht Club",
-    description: "Answers about dockage, stays, dining, fuel and the gift shop.",
+    description:
+      "Answers about dockage, stays, dining, fuel and the gift shop.",
     images: ["/images/hero-marina-aerial.jpg"],
   },
 };
@@ -37,7 +43,7 @@ export default function FaqPage() {
         overline="Good to Know"
         title="Frequently asked questions"
         lede="The answers guests and cruisers ask us most. Can't find yours? The team is a call, WhatsApp or VHF hail away."
-        image="/images/marina-docks.jpg"
+        image="/images/faq-hero.jpg"
         imageAlt="Golden light over the docks at Exuma Yacht Club"
       />
 
@@ -50,7 +56,10 @@ export default function FaqPage() {
           <Reveal delay={100} className="mt-12">
             <FaqAccordion items={faqItems} />
           </Reveal>
-          <Reveal delay={160} className="mt-12 flex flex-col items-start gap-6 border border-sand-300 bg-ivory-100 p-8 sm:flex-row sm:items-center sm:justify-between">
+          <Reveal
+            delay={160}
+            className="mt-12 flex flex-col items-start gap-6 border border-sand-300 bg-ivory-100 p-8 sm:flex-row sm:items-center sm:justify-between"
+          >
             <p className="max-w-md text-sm leading-relaxed text-ink-700">
               Still curious? Send us a message and a real person will answer.
             </p>

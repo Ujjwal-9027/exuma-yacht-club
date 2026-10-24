@@ -118,7 +118,7 @@ export function ReceiptActions({ data }: { data: ReceiptData }) {
         ["Customer", text(data.customerName)],
         ["Email", text(data.email)],
         ["Delivery", deliveryLabel(data)],
-        ["Payment", paymentLabel(data.paymentMethod)],
+        ["Payment", paymentLabel(data.paymentMethod, data.fulfillment)],
         ["Payment status", paymentStatusLabel(data)],
       ];
       rows.forEach(([label, value], index) => {

@@ -261,25 +261,23 @@ export default async function MarinaPage() {
                       {String(groupIndex + 1).padStart(2, "0")}
                     </span>
                   </div>
-                  <dl className="border-y border-sand-300">
-                    {group.items.map(([label, status], itemIndex) => (
+                  <dl className="space-y-3">
+                    {group.items.map(([label, status]) => (
                       <div
                         key={label}
-                        tabIndex={0}
-                        className="group relative isolate flex min-h-16 items-center gap-4 border-b border-sand-200 bg-white px-1 py-4 outline-none [perspective:1000px] [transform-style:preserve-3d] transition-[background-color,box-shadow,transform] duration-300 last:border-b-0 hover:-translate-y-1 hover:bg-ivory-100 hover:shadow-[0_12px_20px_rgba(12,39,51,0.12)] hover:[transform:rotateX(1deg)_rotateY(-1deg)] focus-visible:-translate-y-1 focus-visible:bg-ivory-100 focus-visible:shadow-[0_12px_20px_rgba(12,39,51,0.12)] focus-visible:[transform:rotateX(1deg)_rotateY(-1deg)] motion-reduce:transition-none motion-reduce:hover:transform-none"
+                        className="amenity-tile flex min-h-[76px] items-center gap-3 rounded-lg border border-sand-300 bg-white px-3 py-3 text-sm text-navy-900 sm:px-4"
                       >
-                        <span className="w-6 shrink-0 text-xs text-ink-400 transition-transform duration-300 group-hover:translate-x-1">
-                          {String(itemIndex + 1).padStart(2, "0")}
-                        </span>
-                        <dt className="min-w-0 flex-1 text-sm font-medium text-navy-900">
-                          {label}
-                        </dt>
-                        <dd className="flex shrink-0 items-center gap-1.5 text-right text-[10px] font-semibold uppercase tracking-[0.12em] text-gold-600">
+                        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-md border border-gold-500/40 bg-ivory-100 text-gold-600">
                           <Check
-                            className="h-3.5 w-3.5"
+                            className="h-4 w-4"
                             strokeWidth={2}
                             aria-hidden="true"
                           />
+                        </span>
+                        <dt className="min-w-0 flex-1 font-semibold text-navy-900">
+                          {label}
+                        </dt>
+                        <dd className="flex shrink-0 items-center gap-1.5 text-right text-[10px] font-semibold uppercase tracking-[0.12em] text-gold-600">
                           {status}
                         </dd>
                       </div>

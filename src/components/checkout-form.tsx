@@ -13,6 +13,7 @@ import { getShippingFeeCents, type DeliverySpeed } from "@/lib/shipping";
 type CheckoutMode = "manual" | "demo";
 
 export function CheckoutForm() {
+  const demoPaymentsEnabled = process.env.NODE_ENV !== "production";
   const router = useRouter();
   const { items, clear, hydrated } = useCart();
   const { lines, subtotal, error: catalogError } = useCartLines();
@@ -478,9 +479,11 @@ export function CheckoutForm() {
 
         <div className="mt-6 border border-sand-300 bg-ivory-100 p-5">
           <p className="text-sm leading-relaxed text-ink-700">
-            <span className="font-semibold text-navy-900">Payment:</span> pay
-            securely with PayPal. Delivery fees are calculated from your
-            address.{" "}
+            <span className="font-semibold text-navy-900">Payment:</span>{" "}
+            {demoPaymentsEnabled
+              ? "This local demo simulates PayPal or card checkout; no real payment is taken."
+              : "No online payment provider is connected. Pay for pickup orders at the marina; we will contact you to arrange payment for shipped orders."}{" "}
+            Delivery fees are calculated from your address.{" "}
             <Link
               href="/shipping"
               className="font-semibold text-navy-900 underline decoration-gold-500 underline-offset-4 hover:text-gold-600"
@@ -507,20 +510,30 @@ export function CheckoutForm() {
           <p className="mb-3 text-[12px] font-semibold uppercase tracking-[0.16em] text-navy-900">
             Pay securely with PayPal
           </p>
-          <PayPalButtons
-            key={paypalResetKey}
-            getPayload={getCheckoutPayload}
-            totalCents={subtotal + shippingFeeCents}
-            disabled={status === "submitting" || lines === null}
-            onComplete={(orderNumber) => {
-              clear();
-              router.push(`/order/${orderNumber}`);
-            }}
-            onError={(message) => {
-              setStatus("error");
-              setError(message);
-            }}
-          />
+          {demoPaymentsEnabled ? (
+            <PayPalButtons
+              key={paypalResetKey}
+              getPayload={getCheckoutPayload}
+              totalCents={subtotal + shippingFeeCents}
+              disabled={status === "submitting" || lines === null}
+              onComplete={(orderNumber) => {
+                clear();
+                router.push(`/order/${orderNumber}`);
+              }}
+              onError={(message) => {
+                setStatus("error");
+                setError(message);
+              }}
+            />
+          ) : (
+            <button
+              type="submit"
+              disabled={status === "submitting" || lines === null}
+              className="inline-flex w-full items-center justify-center border border-navy-900 bg-navy-900 px-7 py-3.5 text-[12px] font-semibold uppercase tracking-[0.16em] text-ivory-50 transition-colors hover:bg-transparent hover:text-navy-900 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {status === "submitting" ? "Placing order…" : "Place order"}
+            </button>
+          )}
         </div>
       </form>
 

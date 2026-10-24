@@ -49,10 +49,12 @@ export function toReceiptData(order: Order): ReceiptData {
   };
 }
 
-export function paymentLabel(paymentMethod: string): string {
+export function paymentLabel(paymentMethod: string, fulfillment: string): string {
   if (paymentMethod === "demo_card") return "Demo debit card";
   if (paymentMethod === "demo_paypal") return "Demo PayPal";
-  if (paymentMethod === "at_pickup") return "Pay at pickup";
+  if (paymentMethod === "at_pickup") {
+    return fulfillment === "ship" ? "Payment to be arranged" : "Pay at pickup";
+  }
   return paymentMethod;
 }
 
@@ -103,7 +105,7 @@ export function buildReceiptHtml(data: ReceiptData): string {
 <dt>Phone</dt><dd>${escapeHtml(data.phone ?? "")}</dd>
 <dt>Delivery</dt><dd>${escapeHtml(deliveryLabel(data))}</dd>
 <dt>Address</dt><dd>${address}</dd>
-<dt>Payment</dt><dd>${escapeHtml(paymentLabel(data.paymentMethod))} (${escapeHtml(data.paymentStatus)})</dd>
+<dt>Payment</dt><dd>${escapeHtml(paymentLabel(data.paymentMethod, data.fulfillment))} (${escapeHtml(data.paymentStatus)})</dd>
 <dt>Payment reference</dt><dd>${escapeHtml(data.paymentReference)}</dd>
 </dl><table><thead><tr><th style="text-align:left">Item</th><th style="text-align:right">Amount</th></tr></thead><tbody>${items}</tbody><tfoot>
 <tr><td>Items</td><td>${formatMoney(data.subtotalCents, data.currency)}</td></tr>

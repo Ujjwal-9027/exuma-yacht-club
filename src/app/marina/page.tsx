@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { Check, LifeBuoy, Phone } from "lucide-react";
 import { site } from "@/lib/site";
@@ -7,6 +6,7 @@ import { marinaRates } from "@/data/marinaRates";
 import { marinaAmenities } from "@/data/marinaAmenities";
 import { Container, SectionHeading } from "@/components/ui";
 import { MarinaHero } from "@/components/marina-hero";
+import { MarinaSlideshow } from "@/components/marina-slideshow";
 import { Reveal } from "@/components/reveal";
 import { DifferenceCardGrid } from "@/components/difference-card-grid";
 import { ConfiguredBookingLink } from "@/components/configured-link";
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     title: "Marina & Dockage · Exuma Yacht Club",
     description:
       "Protected dockage in the heart of George Town, Great Exuma — vessels up to 120 ft, power, water and fuel.",
-    images: ["/images/marina-docks.jpg"],
+    images: ["/images/Marina/marina-docks.jpg"],
   },
 };
 
@@ -304,33 +304,8 @@ export default async function MarinaPage() {
           <h2 id="marina-gallery-heading" className="sr-only">
             Marina photography
           </h2>
-          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              [
-                "/images/marina-1.jpg",
-                "Yachts moored along the Exuma Yacht Club docks",
-              ],
-              [
-                "/images/marina-2.jpg",
-                "Marina waters and vessels at Exuma Yacht Club",
-              ],
-              [
-                "/images/hero-marina-aerial.jpg",
-                "Aerial view of Elizabeth Harbour and the Exuma Yacht Club docks",
-              ],
-            ].map(([src, alt], index) => (
-              <Reveal key={src} delay={index * 70}>
-                <div className="img-zoom relative aspect-[4/3] overflow-hidden border border-sand-300">
-                  <Image
-                    src={src}
-                    alt={alt}
-                    fill
-                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                    className="object-cover"
-                  />
-                </div>
-              </Reveal>
-            ))}
+          <div className="mt-12">
+            <MarinaSlideshow />
           </div>
         </Container>
       </section>

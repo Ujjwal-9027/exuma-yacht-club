@@ -80,7 +80,7 @@ export function SiteHeader() {
   return (
     <>
       <header
-        className={`site-header ${isHome ? "fixed w-full" : "sticky"} isolate top-0 z-50 border-b backdrop-blur-sm transition-all duration-300 ${
+        className={`site-header ${isHome || open ? "fixed w-full" : "sticky"} isolate top-0 z-50 border-b backdrop-blur-sm transition-all duration-300 ${
           heroHeader
             ? "border-white/30 bg-ivory-50/5"
             : "border-sand-300 bg-white shadow-[0_1px_0_rgba(12,39,51,0.06)]"

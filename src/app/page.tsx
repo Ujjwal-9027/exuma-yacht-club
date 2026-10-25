@@ -58,7 +58,7 @@ const exploreCards = [
     overline: "The Marina",
     title: "Marina & Dockage",
     text: "Discover Elizabeth Harbour and explore marina facilities, dockage and essential services for visiting vessels.",
-    image: "/images/marina-docks.jpg",
+    image: "/images/Marina/marina-docks.jpg",
     imageAlt: "Sailboats and yachts moored along the docks at Exuma Yacht Club",
     href: "/marina",
     cta: "Explore the Marina",
@@ -196,7 +196,7 @@ export default async function HomePage() {
           <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {exploreCards.map((card, i) => (
               <Reveal key={card.title} delay={(i % 3) * 80}>
-                <article className="lift-card flex h-full flex-col border border-sand-300 bg-white transition-[border-color] duration-300 hover:border-gold-500 motion-reduce:transition-none">
+                <article className="flex h-full flex-col border border-sand-300 bg-white transition-[box-shadow,border-color] duration-300 hover:border-gold-500 hover:shadow-lg">
                   <Link href={card.href} className="group block">
                     <div className="relative aspect-[4/3] border-b border-sand-200">
                       <Image
@@ -204,7 +204,7 @@ export default async function HomePage() {
                         alt={card.imageAlt}
                         fill
                         sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                        className="object-cover"
+                        className="object-cover transition-none"
                       />
                     </div>
                     <div className="flex flex-1 flex-col p-6">

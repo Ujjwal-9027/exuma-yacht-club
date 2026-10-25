@@ -30,6 +30,7 @@ export default async function ContactPage() {
       value: contactSettings.marinaPhone,
       href: phoneHref(contactSettings.marinaPhone),
       note: "Hotel, dockage, fuel & general inquiries",
+      iconStyle: "bg-ivory-100 text-gold-700",
     },
     {
       icon: Mail,
@@ -37,6 +38,7 @@ export default async function ContactPage() {
       value: contactSettings.businessEmail,
       href: `mailto:${contactSettings.businessEmail}`,
       note: "General inquiries",
+      iconStyle: "bg-[#edf3f2] text-[#315c57]",
     },
     {
       icon: MessageCircle,
@@ -46,6 +48,7 @@ export default async function ContactPage() {
         ? `https://wa.me/${contactSettings.whatsappNumber}`
         : null,
       note: "Quick messages, any topic",
+      iconStyle: "bg-[#eaf4ee] text-[#26734a]",
     },
     {
       icon: Radio,
@@ -53,6 +56,7 @@ export default async function ContactPage() {
       value: contactSettings.vhfChannel,
       href: null,
       note: "Hail the dock office on approach",
+      iconStyle: "bg-[#eaf1f5] text-[#426b82]",
     },
   ];
   return (
@@ -73,14 +77,23 @@ export default async function ContactPage() {
           </h2>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {channels.map((channel, i) => (
-              <Reveal key={channel.label} delay={i * 60}>
-                <div className="flex h-full flex-col border border-sand-300 bg-white p-6">
-                  <channel.icon
-                    className="h-5 w-5 text-gold-600"
-                    strokeWidth={1.6}
-                    aria-hidden="true"
-                  />
-                  <h3 className="mt-4 text-[10px] font-semibold uppercase tracking-[0.22em] text-gold-600">
+              <Reveal key={channel.label} delay={i * 60} className="h-full">
+                <article className="group relative flex h-full min-h-56 flex-col overflow-hidden border border-sand-300 border-t-2 border-t-gold-500 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-navy-800 hover:shadow-lg motion-reduce:transform-none motion-reduce:transition-none">
+                  <div className="flex items-center justify-between">
+                    <span
+                      className={`grid h-12 w-12 place-items-center transition-transform duration-300 group-hover:scale-105 ${channel.iconStyle}`}
+                    >
+                      <channel.icon
+                        className="h-5 w-5"
+                        strokeWidth={1.7}
+                        aria-hidden="true"
+                      />
+                    </span>
+                    <span className="font-display text-sm text-sand-400">
+                      0{i + 1}
+                    </span>
+                  </div>
+                  <h3 className="mt-5 text-[10px] font-semibold uppercase tracking-[0.2em] text-gold-700">
                     {channel.label}
                   </h3>
                   {channel.href ? (
@@ -94,19 +107,19 @@ export default async function ContactPage() {
                           ? "noopener noreferrer"
                           : undefined
                       }
-                      className="mt-2 font-display text-lg leading-snug text-navy-900 hover:text-gold-600"
+                      className="mt-2 break-words font-display text-xl leading-snug text-navy-900 transition-colors hover:text-gold-700 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold-600"
                     >
                       {channel.value}
                     </a>
                   ) : (
-                    <p className="mt-2 font-display text-lg leading-snug text-navy-900">
+                    <p className="mt-2 font-display text-xl leading-snug text-navy-900">
                       {channel.value}
                     </p>
                   )}
-                  <p className="mt-auto pt-3 text-xs leading-relaxed text-ink-400">
+                  <p className="mt-auto border-t border-sand-200 pt-4 text-xs leading-relaxed text-ink-500">
                     {channel.note}
                   </p>
-                </div>
+                </article>
               </Reveal>
             ))}
           </div>

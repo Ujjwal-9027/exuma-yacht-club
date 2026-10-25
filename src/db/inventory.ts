@@ -9,21 +9,25 @@ export async function reserveProductStock(
   color?: string | null,
 ): Promise<boolean> {
   if (size || color) {
-    const variant = await products.updateOne(
-      {
-        slug,
-        active: true,
-        variants: {
-          $elemMatch: {
-            size: size ?? null,
-            color: color ?? null,
-            stockQty: { $gte: quantity },
+    const variantSelectors = [
+      { size: size ?? null, color: color ?? null },
+      ...(color ? [{ size: size ?? null, color: null }] : []),
+      ...(size ? [{ size: null, color: color ?? null }] : []),
+    ];
+
+    for (const selector of variantSelectors) {
+      const variant = await products.updateOne(
+        {
+          slug,
+          active: true,
+          variants: {
+            $elemMatch: { ...selector, stockQty: { $gte: quantity } },
           },
         },
-      },
-      { $inc: { "variants.$.stockQty": -quantity }, $set: { updatedAt: new Date() } },
-    );
-    if (variant.matchedCount > 0) return true;
+        { $inc: { "variants.$.stockQty": -quantity }, $set: { updatedAt: new Date() } },
+      );
+      if (variant.matchedCount > 0) return true;
+    }
 
     const product = await products.findOne(
       { slug, active: true },

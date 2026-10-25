@@ -188,32 +188,6 @@ button.header-plain:hover {
     box-shadow 350ms cubic-bezier(0.22, 1, 0.36, 1), border-color 200ms ease;
 }
 
-.attraction-card:focus-within {
-  border-color: var(--color-gold-500);
-}
-
-.attraction-card-detail {
-  margin-top: 1rem;
-  grid-template-rows: 1fr;
-  opacity: 1;
-}
-
-@media (min-width: 64rem) {
-  .attraction-card-detail {
-    margin-top: 0;
-    grid-template-rows: 0fr;
-    opacity: 0;
-  }
-
-  .attraction-card:hover .attraction-card-detail,
-  .attraction-card:focus-visible .attraction-card-detail,
-  .attraction-card:focus-within .attraction-card-detail {
-    margin-top: 1rem;
-    grid-template-rows: 1fr;
-    opacity: 1;
-  }
-}
-
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
   .attraction-card:hover {
     transform: perspective(1100px) rotateX(1.5deg) rotateY(-1.5deg) translateY(-4px);
@@ -241,6 +215,12 @@ button.header-plain:hover {
 .border-sand-200.bg-white {
   border-radius: 0.5rem;
   overflow: hidden;
+}
+
+#mobile-menu {
+  border-radius: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 /* Subtle image zoom on hover for cards */
@@ -332,6 +312,52 @@ button.header-plain:hover {
 
 .shake-error {
   animation: shake-error 180ms ease-in-out 2;
+}
+
+.marina-image-trail {
+  overflow: hidden;
+}
+
+.marina-image-trail-track {
+  display: flex;
+  width: max-content;
+  animation: marina-image-trail-scroll 90s linear infinite;
+}
+
+.marina-image-trail:hover .marina-image-trail-track,
+.marina-image-trail.is-lightbox-open .marina-image-trail-track {
+  animation-play-state: paused;
+}
+
+.marina-image-trail-group {
+  display: flex;
+  flex: none;
+  gap: 1rem;
+  padding-right: 1rem;
+}
+
+.marina-image-trail-slide {
+  flex: 0 0 min(78vw, 360px);
+}
+
+@keyframes marina-image-trail-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marina-image-trail {
+    overflow-x: auto;
+  }
+
+  .marina-image-trail-track {
+    animation: none;
+  }
+
+  .marina-image-trail-group[aria-hidden="true"] {
+    display: none;
+  }
 }
 
 /* Form field styling */

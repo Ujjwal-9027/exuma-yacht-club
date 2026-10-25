@@ -71,7 +71,7 @@ export default function DestinationPage() {
                 alt: "Turquoise water and sandbars from the air in Exuma",
               },
               {
-                src: "/images/marina-docks.jpg",
+                src: "/images/Marina/marina-docks.jpg",
                 alt: "Yachts at rest in Elizabeth Harbour",
               },
               {

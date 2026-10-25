@@ -7,39 +7,38 @@ import { Reveal } from "@/components/reveal";
 
 const galleryItems = [
   {
-    src: "/images/hero-marina-aerial.jpg",
-    alt: "Aerial view of the marina on turquoise water",
-    title: "Elizabeth Harbour from above",
+    src: "/images/EYC%20About/EYC_main2.jpg",
+    alt: "View from the waterfront deck across palm-lined grounds toward the harbour docks",
+    title: "A View Across the Harbour",
     category: "Island Views",
     description:
-      "A quiet sweep across the harbour, docks and surrounding islands.",
+      "A sunlit look across the club's waterfront deck and the docks beyond.",
     position: "object-center",
   },
   {
-    src: "/images/marina-docks.jpg",
-    alt: "Yachts moored along the wooden docks at golden hour",
-    title: "Alongside at golden hour",
+    src: "/images/EYC%20About/EYC_main8.jpg",
+    alt: "Yachts and sailboats moored at the docks beneath a golden sunset",
+    title: "Golden Hour at the Docks",
     category: "Marina Life",
     description:
-      "The easy rhythm of arrivals, departures and long afternoons on the dock.",
+      "Boats settle in for the evening as the sun sets over Elizabeth Harbour.",
     position: "object-center",
   },
   {
-    src: "/images/dining.jpg",
-    alt: "Waterfront restaurant deck at sunset",
-    title: "Dinner over the water",
+    src: "/images/EYC%20About/EYC_main11.jpg",
+    alt: "Guests seated on a shaded terrace beside the club's white building and palms",
+    title: "A Table Beneath the Palms",
     category: "Dining",
-    description:
-      "An open-air table framed by the harbour and the evening light.",
+    description: "A relaxed open-air setting at the club, surrounded by palms.",
     position: "object-center",
   },
   {
-    src: "/images/stay-room.jpg",
-    alt: "Boutique hotel room with harbour view",
-    title: "A room with a harbour view",
+    src: "/images/EYC%20About/EYC_main6.jpg",
+    alt: "A covered waterfront veranda framed by palms in the evening light",
+    title: "A Quiet Harbour Veranda",
     category: "Stay",
     description:
-      "A calm island base, close to the water and the life of George Town.",
+      "A peaceful place to unwind with the water just beyond the palms.",
     position: "object-center",
   },
 ] as const;

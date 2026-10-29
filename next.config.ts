@@ -28,6 +28,7 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  images: {},
   experimental: {
     serverActions: {
       bodySizeLimit: "6mb",

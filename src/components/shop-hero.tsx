@@ -5,26 +5,27 @@ import { useEffect, useState } from "react";
 import { ArrowDown } from "lucide-react";
 import { Container } from "@/components/ui";
 import { ButtonLink } from "@/components/ui";
+import { getPublicAssetPath } from "@/lib/public-assets";
 
 const shopHeroSlides = [
   {
-    src: "/images/Shop/hero1.jpg",
+    src: getPublicAssetPath("/images/Shop/hero1.jpg"),
     alt: "Colorful Exuma Yacht Club caps arranged on a wooden table.",
   },
   {
-    src: "/images/Shop/hero2.png",
+    src: getPublicAssetPath("/images/Shop/hero2.png"),
     alt: "Exuma Yacht Club caps displayed on a sandy beach beside the sea.",
   },
   {
-    src: "/images/Shop/hero3.jpg",
+    src: getPublicAssetPath("/images/Shop/hero3.jpg"),
     alt: "A yellow Exuma Yacht Club cap resting on a wooden deck among dock lines.",
   },
   {
-    src: "/images/Shop/hero4.jpg",
+    src: getPublicAssetPath("/images/Shop/hero4.jpg"),
     alt: "A row of colorful Exuma Yacht Club caps displayed on a shelf.",
   },
   {
-    src: "/images/Shop/hero5.jpeg",
+    src: getPublicAssetPath("/images/Shop/hero5.jpeg"),
     alt: "An Exuma Yacht Club cap pictured beside an airplane at an airport.",
   },
 ] as const;

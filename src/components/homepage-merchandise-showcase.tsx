@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { ArrowRight } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import type { Product } from "@/db/schema";
 import { Reveal } from "@/components/reveal";
 import {
@@ -13,8 +14,6 @@ import {
 } from "@/lib/product-utils";
 import { formatMoney } from "@/lib/format";
 
-const VISIBLE_SUPPORTING_COUNT = 6;
-
 function productBadge(product: Product): string | null {
   if (isNewArrival(product)) return "New Arrival";
   if (product.eycExclusive) return "EYC Exclusive";
@@ -22,12 +21,6 @@ function productBadge(product: Product): string | null {
   if (product.giftIdea) return "Gift Idea";
   if (product.featured) return "Featured";
   return null;
-}
-
-function randomProduct(products: Product[]): Product | null {
-  return products.length > 0
-    ? products[Math.floor(Math.random() * products.length)]
-    : null;
 }
 
 function ProductImageSlideshow({
@@ -57,6 +50,11 @@ function ProductImageSlideshow({
     }
   }
 
+  function resetSlideshow() {
+    setIsHovered(false);
+    setActiveIndex(0);
+  }
+
   useEffect(() => {
     if (
       images.length <= 1 ||
@@ -74,14 +72,14 @@ function ProductImageSlideshow({
   return (
     <div
       onMouseEnter={activateSlideshow}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseLeave={resetSlideshow}
       onFocus={activateSlideshow}
       onBlur={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
-          setIsHovered(false);
+          resetSlideshow();
         }
       }}
-      className={`relative overflow-hidden bg-white/5 ${large ? "aspect-[4/5] min-h-0 flex-1 lg:aspect-auto" : "aspect-[4/5]"}`}
+      className="relative min-h-0 flex-1 overflow-hidden bg-white/5"
     >
       {[...images, ...(images.length ? [] : [fallbackImage])].map(
         (image, index) => (
@@ -120,45 +118,31 @@ export function HomepageMerchandiseShowcase({
   featuredReason: FeaturedProductReason;
   supporting: Product[];
 }) {
-  const [visibleSupporting, setVisibleSupporting] = useState(() =>
-    supporting.slice(0, VISIBLE_SUPPORTING_COUNT),
-  );
-  const [paused, setPaused] = useState(false);
+  const supportingTrackRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const allProducts = supporting;
-    if (
-      allProducts.length <= VISIBLE_SUPPORTING_COUNT ||
-      paused ||
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) {
-      return;
-    }
-    const timer = window.setInterval(() => {
-      setVisibleSupporting((currentSupporting) => {
-        const hiddenProducts = allProducts.filter(
-          (product) =>
-            !currentSupporting.some((visible) => visible.slug === product.slug),
-        );
-        const replacement = randomProduct(hiddenProducts);
-        if (!replacement) return currentSupporting;
-        const replacementIndex = Math.floor(
-          Math.random() * currentSupporting.length,
-        );
-        return currentSupporting.map((product, index) =>
-          index === replacementIndex ? replacement : product,
-        );
-      });
-    }, 5000);
-    return () => window.clearInterval(timer);
-  }, [supporting, paused]);
+  function showNextSupportingProduct() {
+    const track = supportingTrackRef.current;
+    const firstCard = track?.firstElementChild;
+    if (!(track && firstCard instanceof HTMLElement)) return;
+
+    const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 2;
+    const nextPosition = atEnd
+      ? 0
+      : track.scrollLeft + firstCard.offsetWidth + 16;
+    track.scrollTo({
+      left: nextPosition,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "auto"
+        : "smooth",
+    });
+  }
 
   function merchandiseCard(product: Product, large = false) {
     const badge = large ? featuredReason : productBadge(product);
     return (
       <Link
         href={`/shop/${product.slug}`}
-        className={`merchandise-card group overflow-hidden rounded-2xl border border-white/15 bg-white/5 transition-[box-shadow,transform,border-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-gold-400/50 hover:shadow-[0_24px_50px_rgba(0,0,0,0.24)] motion-reduce:transition-none motion-reduce:hover:transform-none ${large ? "flex h-full flex-col" : "block"}`}
+        className="merchandise-card group flex h-96 w-full flex-col overflow-hidden rounded-2xl border border-white/15 bg-white/5 transition-[box-shadow,transform,border-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-gold-400/50 hover:shadow-[0_24px_50px_rgba(0,0,0,0.24)] motion-reduce:transition-none motion-reduce:hover:transform-none"
       >
         <ProductImageSlideshow product={product} badge={badge} large={large} />
         <div className={large ? "px-5 py-5 sm:px-6" : "px-5 pb-5 pt-4"}>
@@ -201,32 +185,40 @@ export function HomepageMerchandiseShowcase({
   return (
     <div
       className="grid items-stretch gap-8 lg:grid-cols-[minmax(0,0.78fr)_minmax(0,1.22fr)] lg:gap-10"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onFocus={() => setPaused(true)}
-      onBlur={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
-          setPaused(false);
-        }
-      }}
       aria-label="EYC merchandise showcase"
     >
-      <Reveal className="h-full [&>a]:h-full">
+      <Reveal className="h-96 [&>a]:h-full">
         {merchandiseCard(featured, true)}
       </Reveal>
-      <div className="min-w-0 lg:h-full">
-        <div
-          className={`flex snap-x snap-mandatory gap-5 overflow-x-auto pb-3 sm:grid sm:overflow-visible sm:pb-0 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-5 lg:gap-y-8 ${visibleSupporting.length === VISIBLE_SUPPORTING_COUNT ? "lg:h-full lg:grid-rows-2" : ""}`}
-        >
-          {visibleSupporting.map((product, index) => (
-            <Reveal
-              key={product.slug}
-              delay={index * 60}
-              className={`w-[78vw] shrink-0 snap-start sm:w-auto sm:shrink ${visibleSupporting.length === VISIBLE_SUPPORTING_COUNT ? "h-full [&>a]:h-full" : ""}`}
+      <div className="min-w-0 lg:flex lg:h-full lg:items-center">
+        <div className="relative min-w-0 flex-1">
+          <div
+            ref={supportingTrackRef}
+            role="region"
+            aria-roledescription="carousel"
+            aria-label="Supporting products"
+            className="home-supporting-track -mt-3 flex min-w-0 flex-1 snap-x snap-mandatory gap-4 overflow-x-auto pb-3 pt-3"
+          >
+            {supporting.map((product, index) => (
+              <Reveal
+                key={product.slug}
+                delay={Math.min(index * 50, 250)}
+                className="h-96 w-[62vw] max-w-[220px] shrink-0 snap-start sm:w-[38vw] sm:max-w-none lg:w-[30%]"
+              >
+                {merchandiseCard(product)}
+              </Reveal>
+            ))}
+          </div>
+          {supporting.length > 1 && (
+            <button
+              type="button"
+              aria-label="Show next products"
+              onClick={showNextSupportingProduct}
+              className="absolute right-3 top-[40%] z-20 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/80 bg-transparent text-white drop-shadow-[0_1px_5px_rgba(0,0,0,0.85)] transition-[border-color,color,transform] duration-300 hover:scale-105 hover:border-gold-300 hover:text-gold-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent motion-reduce:transition-none motion-reduce:hover:transform-none"
             >
-              {merchandiseCard(product)}
-            </Reveal>
-          ))}
+              <ArrowRight className="h-5 w-5" aria-hidden="true" />
+            </button>
+          )}
         </div>
       </div>
     </div>

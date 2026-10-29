@@ -8,6 +8,7 @@ import {
 } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { FaqAccordion } from "@/components/accordion";
+import { getPublicAssetPath } from "@/lib/public-assets";
 
 export const metadata: Metadata = {
   title: "FAQ",
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
     title: "FAQ · Exuma Yacht Club",
     description:
       "Answers about dockage, stays, dining, fuel and the gift shop.",
-    images: ["/images/hero-marina-aerial.jpg"],
+    images: [getPublicAssetPath("/images/marina-1.jpg")],
   },
 };
 
@@ -43,7 +44,7 @@ export default function FaqPage() {
         overline="Good to Know"
         title="Frequently asked questions"
         lede="The answers guests and cruisers ask us most. Can't find yours? The team is a call, WhatsApp or VHF hail away."
-        image="/images/faq-hero.jpg"
+        image={getPublicAssetPath("/images/faq-hero.jpg")}
         imageAlt="Golden light over the docks at Exuma Yacht Club"
       />
 

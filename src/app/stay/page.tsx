@@ -19,6 +19,7 @@ import { Reveal } from "@/components/reveal";
 import { DifferenceCardGrid } from "@/components/difference-card-grid";
 import { BookingTransitionLink } from "@/components/booking-transition-link";
 import { getManagedSiteSettings } from "@/lib/managed-site";
+import { getPublicAssetPath } from "@/lib/public-assets";
 
 const roomImage =
   "/uploads/rooms/EYC3/48633b62-9d49-4706-9521-fea2edf81809.jpg";
@@ -34,7 +35,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Stay · Exuma Yacht Club",
     description: "A relaxed waterfront base for discovering Great Exuma.",
-    images: [roomImage],
+    images: [getPublicAssetPath(roomImage)],
   },
 };
 
@@ -91,7 +92,7 @@ const gallery = [
     caption: "A quiet place to settle in",
   },
   {
-    src: "/images/marina-1.jpg",
+    src: getPublicAssetPath("/images/marina-1.jpg"),
     alt: "Marina docks and boats at sunset.",
     caption: "Evenings around the marina",
   },
@@ -148,6 +149,7 @@ export default async function StayPage() {
                 bookingUrl={bookingUrl}
                 ariaLabel="Book accommodation through ResNexus"
                 hideWhenVisibleId="stay-booking-button"
+                floatingVariant="angled"
               />
               <ButtonLink
                 href="#stay-intro"
@@ -217,7 +219,11 @@ export default async function StayPage() {
               Close to the water, rooted in George Town
             </h2>
           </Reveal>
-          <DifferenceCardGrid cards={highlights} layout="featured" />
+          <DifferenceCardGrid
+            cards={highlights}
+            layout="featured"
+            naturalHeight
+          />
         </Container>
       </section>
 

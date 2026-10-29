@@ -8,6 +8,7 @@ import { Container } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { ConfiguredBookingLink } from "@/components/configured-link";
 import { getManagedSiteSettings } from "@/lib/managed-site";
+import { getPublicAssetPath } from "@/lib/public-assets";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -26,7 +27,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: `${room.name} · Exuma Yacht Club`,
       description: room.shortDescription,
-      images: [room.images[0]?.src ?? "/images/stay-room.jpg"],
+      images: [
+        getPublicAssetPath(room.images[0]?.src ?? "/images/stay-room.jpg"),
+      ],
     },
   };
 }

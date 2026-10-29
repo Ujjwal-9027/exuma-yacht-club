@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import type { Room } from "@/data/rooms";
 import { ConfiguredBookingLink } from "@/components/configured-link";
+import { getPublicAssetPath } from "@/lib/public-assets";
 
 export function RoomCard({
   room,
@@ -15,7 +16,9 @@ export function RoomCard({
     <article className="flex h-full flex-col border border-sand-300 bg-white transition-colors hover:border-gold-500">
       <div className="img-zoom relative aspect-[3/2] border-b border-sand-200 bg-ivory-100">
         <Image
-          src={room.images[0]?.src ?? "/images/stay-room.jpg"}
+          src={getPublicAssetPath(
+            room.images[0]?.src ?? "/images/stay-room.jpg",
+          )}
           alt={room.images[0]?.alt ?? room.name}
           fill
           sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"

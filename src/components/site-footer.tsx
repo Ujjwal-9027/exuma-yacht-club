@@ -74,7 +74,6 @@ export function SiteFooter({
                 width={320}
                 height={197}
                 priority
-                unoptimized
                 className="h-auto w-44 max-w-full rounded-xl border-2 border-white object-cover"
               />
             </Link>

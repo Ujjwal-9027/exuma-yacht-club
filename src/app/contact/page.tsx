@@ -6,6 +6,7 @@ import { isPlaceholder } from "@/config/site";
 import { Container, PageHero, SectionHeading } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { InquiryForm } from "@/components/inquiry-form";
+import { getPublicAssetPath } from "@/lib/public-assets";
 
 export const metadata: Metadata = {
   title: "Contact & Location",
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
     title: "Contact · Exuma Yacht Club",
     description:
       "Reach the marina by phone, WhatsApp or VHF Channel 16 — or send an inquiry.",
-    images: ["/images/hero-marina-aerial.jpg"],
+    images: [getPublicAssetPath("/images/marina-1.jpg")],
   },
 };
 
@@ -65,7 +66,7 @@ export default async function ContactPage() {
         overline="Contact & Location"
         title="Talk to the team"
         lede="Questions about dockage, stays, fuel or the gift shop — reach us by phone, email, WhatsApp, VHF or the form below."
-        image="/images/contact-hero.jpg"
+        image={getPublicAssetPath("/images/contact-hero.jpg")}
         imageAlt="Aerial view of Elizabeth Harbour and the marina at Exuma Yacht Club"
       />
 

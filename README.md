@@ -33,6 +33,7 @@ Set the values in `.env.local` before using database-backed routes. Keep this fi
 | Admin Settings notification recipients | Inquiry and order recipients are configured in the database-backed admin settings. |
 | `PAYMENT_PROVIDER` | Currently only `manual` is implemented; defaults to `manual`. |
 | `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, `PAYPAL_ENVIRONMENT` | PayPal configuration helpers; a verified PayPal checkout/capture flow is not currently connected to order placement. |
+| `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` | Cloudinary cloud name used by the Next.js image loader. Required for pages to resolve migrated images from Cloudinary. |
 
 Never commit real credentials. `.env.example` contains placeholders only.
 

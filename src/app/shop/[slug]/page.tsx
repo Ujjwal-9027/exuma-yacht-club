@@ -15,6 +15,7 @@ import {
   getLowStockLabel,
   getProductImages,
 } from "@/lib/product-utils";
+import { getPublicAssetPath } from "@/lib/public-assets";
 
 export const dynamic = "force-dynamic";
 
@@ -34,7 +35,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: `${product.name} · ${site.shortName}`,
       description: product.tagline || undefined,
-      images: [getProductImages(product)[0]?.url || product.image],
+      images: [
+        getPublicAssetPath(getProductImages(product)[0]?.url || product.image),
+      ],
     },
   };
 }

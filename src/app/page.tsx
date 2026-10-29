@@ -11,6 +11,7 @@ import { getHomepageMerchandise } from "@/lib/product-utils";
 import { HomepageMerchandiseShowcase } from "@/components/homepage-merchandise-showcase";
 import { DifferenceCardGrid } from "@/components/difference-card-grid";
 import { EditorialGallery } from "@/components/editorial-gallery";
+import { getPublicAssetPath } from "@/lib/public-assets";
 
 export const dynamic = "force-dynamic";
 
@@ -58,7 +59,7 @@ const exploreCards = [
     overline: "The Marina",
     title: "Marina & Dockage",
     text: "Discover Elizabeth Harbour and explore marina facilities, dockage and essential services for visiting vessels.",
-    image: "/images/Marina/marina-docks.jpg",
+    image: getPublicAssetPath("/images/Marina/marina-docks.jpg"),
     imageAlt: "Sailboats and yachts moored along the docks at Exuma Yacht Club",
     href: "/marina",
     cta: "Explore the Marina",
@@ -69,7 +70,7 @@ const exploreCards = [
     overline: "The Hotel",
     title: "Accommodation",
     text: "Find your island base in George Town, with comfortable accommodation close to the harbour.",
-    image: "/images/stay-room.jpg",
+    image: getPublicAssetPath("/images/stay-room.jpg"),
     imageAlt: "Boutique hotel room with sea view at Exuma Yacht Club",
     href: "/stay",
     cta: "Plan Your Stay",
@@ -78,7 +79,7 @@ const exploreCards = [
     overline: "The Restaurant",
     title: "Restaurant & Dining",
     text: "A newly renovated waterfront restaurant and bar is expected to open in December 2026.",
-    image: "/images/dining.jpg",
+    image: getPublicAssetPath("/images/dining.jpg"),
     imageAlt: "Open-air waterfront restaurant and bar overlooking the marina",
     href: "/dining",
     cta: "View Dining",
@@ -94,7 +95,7 @@ export default async function HomePage() {
       {/* ── Hero ─────────────────────────────────────────────── */}
       <section className="relative flex h-[100vh] items-center overflow-hidden bg-navy-950">
         <Image
-          src="/images/hero.jpg"
+          src={getPublicAssetPath("/images/hero.jpg")}
           alt="Aerial view of yachts and sailboats moored on turquoise water at Exuma Yacht Club"
           fill
           priority
@@ -107,7 +108,7 @@ export default async function HomePage() {
           loop
           playsInline
           preload="metadata"
-          poster="/images/hero.jpg"
+          poster="/test/hero.jpg"
           aria-hidden="true"
           className="absolute inset-0 h-full w-full object-cover object-center"
         >

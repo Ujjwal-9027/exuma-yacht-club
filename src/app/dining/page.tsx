@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Container, PageHero } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
+import { getPublicAssetPath } from "@/lib/public-assets";
 
 export const metadata: Metadata = {
   title: "Restaurant & Dining",
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
     title: "Restaurant & Dining · Exuma Yacht Club",
     description:
       "A newly renovated waterfront restaurant and bar is expected to open in December 2026.",
-    images: ["/images/dining.jpg"],
+    images: [getPublicAssetPath("/images/dining.jpg")],
   },
 };
 
@@ -22,7 +23,7 @@ export default function DiningPage() {
         overline="Restaurant & Bar"
         title="Waterfront dining is coming to the harbour"
         lede="Newly Renovated Restaurant & Bar — Coming December 2026"
-        image="/images/dining.jpg"
+        image={getPublicAssetPath("/images/dining.jpg")}
         imageAlt="Waterfront restaurant space at Exuma Yacht Club"
       />
 

@@ -1,4 +1,5 @@
 import { config } from "@/config/site";
+import { getPublicAssetPath } from "@/lib/public-assets";
 
 export type Room = {
   slug: string;
@@ -11,7 +12,7 @@ export type Room = {
 };
 
 const temporaryImage = {
-  src: "/images/stay-room.jpg",
+  src: getPublicAssetPath("/images/stay-room.jpg"),
   alt: "Temporary accommodation image — room-specific photography pending approval",
 };
 

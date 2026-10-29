@@ -72,7 +72,7 @@ function addressHtml(order: Order): string {
 function itemRows(order: Order): string {
   return order.items.map((item) => {
     const image = meaningful(item.image)
-      ? `<img src="${escapeHtml(new URL(item.image!, site.url).toString())}" width="56" height="56" alt="${escapeHtml(item.name)}" style="display:block;width:56px;height:56px;object-fit:cover;border:1px solid #E7DCC6;background:#F7F1E5;" />`
+      ? `<img src="${escapeHtml(item.image!)}" width="56" height="56" alt="${escapeHtml(item.name)}" style="display:block;width:56px;height:56px;object-fit:cover;border:1px solid #E7DCC6;background:#F7F1E5;" />`
       : `<div style="width:56px;height:56px;background:#F7F1E5;border:1px solid #E7DCC6;"></div>`;
     const variant = [item.size, item.color].filter(meaningful).map(escapeHtml).join(" · ");
     return `<tr>
@@ -134,7 +134,7 @@ export function buildTransactionalOrderEmail(
   const statusMessage = status === "ready"
     ? `Your order is ready for collection at the Exuma Yacht Club marina gift shop. Please bring your order number when you arrive.`
     : rendered.body;
-  const logoUrl = "https://exuma-yacht-club-ns7z.vercel.app/logo/EYCflag.png";
+  const logoUrl = "/logo/EYCflag.png";
   const pickupOrDelivery = pickup
     ? `<tr><td style="padding:16px 0 0;"><div style="padding:16px;background:#F7F1E5;border-left:3px solid #B18A4A;"><strong style="color:#0D2935;font-size:14px;">Pickup details</strong><br><span style="color:#4F5D61;font-size:13px;line-height:20px;">Exuma Yacht Club marina gift shop<br>Queen's Highway, George Town, The Bahamas<br>Please bring your order number.</span></div></td></tr>`
     : `<tr><td style="padding:16px 0 0;"><div style="padding:16px;background:#F7F1E5;border-left:3px solid #B18A4A;"><strong style="color:#0D2935;font-size:14px;">Delivery details</strong><br><span style="color:#4F5D61;font-size:13px;line-height:20px;">${addressHtml(order)}</span>${meaningful(order.shippingCarrier) ? `<br><span style="color:#4F5D61;font-size:13px;">Carrier: ${escapeHtml(order.shippingCarrier)}</span>` : ""}${meaningful(order.trackingNumber) ? `<br><span style="color:#4F5D61;font-size:13px;">Tracking: ${escapeHtml(order.trackingNumber)}</span>` : ""}</div></td></tr>`;

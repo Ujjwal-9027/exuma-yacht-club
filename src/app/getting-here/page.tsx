@@ -6,6 +6,7 @@ import { config, isPlaceholder } from "@/config/site";
 import { Container, PageHero, SectionHeading } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { DifferenceCardGrid } from "@/components/difference-card-grid";
+import { getPublicAssetPath } from "@/lib/public-assets";
 
 export const metadata: Metadata = {
   title: "Getting Here",
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Getting Here · Exuma Yacht Club",
     description: "By sea, by air, by taxi — three easy ways to reach the club.",
-    images: ["/images/getting-here-hero.jpg"],
+    images: [getPublicAssetPath("/images/getting-here-hero.jpg")],
   },
 };
 
@@ -50,7 +51,7 @@ export default function GettingHerePage() {
         overline="Getting Here"
         title="Three ways to arrive"
         lede={gettingHereContent.heroLede}
-        image="/images/getting-here-hero.jpg"
+        image={getPublicAssetPath("/images/getting-here-hero.jpg")}
         imageAlt="Exuma Yacht Club sign surrounded by palm trees"
       />
 

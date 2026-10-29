@@ -5,6 +5,7 @@ import { ButtonLink, Container, SectionHeading } from "@/components/ui";
 import { ShopHero } from "@/components/shop-hero";
 import { ShopFilters } from "@/components/shop-filters";
 import { OrderProcessCards } from "@/components/order-process-cards";
+import { getPublicAssetPath } from "@/lib/public-assets";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
     title: "Merchandise & Gift Shop · Exuma Yacht Club",
     description:
       "Club apparel and island essentials — order online and collect at the marina.",
-    images: ["/images/shop-tee.jpg"],
+    images: [getPublicAssetPath("/images/Shop/hero1.jpg")],
   },
 };
 

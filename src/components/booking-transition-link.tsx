@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
+import { ArrowRight } from "lucide-react";
 import { isPlaceholder } from "@/config/site";
 
 const buttonClass =
@@ -16,10 +17,12 @@ export function BookingTransitionLink({
   bookingUrl,
   ariaLabel,
   hideWhenVisibleId,
+  floatingVariant = "standard",
 }: {
   bookingUrl: string;
   ariaLabel: string;
   hideWhenVisibleId?: string;
+  floatingVariant?: "standard" | "angled";
 }) {
   const sourceRef = useRef<HTMLAnchorElement>(null);
   const [sourceVisible, setSourceVisible] = useState(true);
@@ -79,9 +82,23 @@ export function BookingTransitionLink({
         rel="noopener noreferrer"
         tabIndex={floatingVisible ? 0 : -1}
         aria-label={ariaLabel}
-        className={`${buttonClass} shadow-lg shadow-navy-950/25`}
+        className={
+          floatingVariant === "angled"
+            ? "group inline-flex items-center justify-center border border-gold-400 bg-navy-950 px-6 py-3.5 font-body text-[11px] font-semibold not-italic uppercase tracking-[0.16em] text-ivory-50 shadow-[6px_6px_0_var(--color-gold-400)] transition-[transform,box-shadow,color] duration-300 hover:-translate-y-0.5 hover:shadow-[9px_9px_0_var(--color-gold-400)] hover:text-gold-300 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold-400 motion-reduce:transition-none motion-reduce:hover:transform-none"
+            : `${buttonClass} shadow-lg shadow-navy-950/25`
+        }
       >
-        Book Now
+        {floatingVariant === "angled" ? (
+          <span className="inline-flex items-center gap-3">
+            Book Now
+            <ArrowRight
+              className="h-8 w-8 transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:transform-none"
+              aria-hidden="true"
+            />
+          </span>
+        ) : (
+          "Book Now"
+        )}
       </a>
     </div>
   );

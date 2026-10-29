@@ -6,6 +6,9 @@ import { site } from "@/lib/site";
 import { CartProvider } from "@/components/cart-provider";
 import { SiteChrome } from "@/components/site-chrome";
 import { getPublicContactSettings } from "@/lib/managed-site";
+import { getPublicAssetPath } from "@/lib/public-assets";
+
+const socialImage = getPublicAssetPath("/images/marina-1.jpg");
 
 const inter = Inter({
   subsets: ["latin"],
@@ -35,7 +38,7 @@ export const metadata: Metadata = {
     description: site.description,
     images: [
       {
-        url: "/images/hero-marina-aerial.jpg",
+        url: socialImage,
         width: 1600,
         height: 900,
         alt: "Aerial view of the marina at Exuma Yacht Club on Elizabeth Harbour",
@@ -46,7 +49,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: `${site.name} — George Town, Exuma, Bahamas`,
     description: site.description,
-    images: ["/images/hero-marina-aerial.jpg"],
+    images: [socialImage],
   },
 };
 
@@ -71,7 +74,7 @@ function LocalBusinessJsonLd() {
       latitude: site.coordinates.lat,
       longitude: site.coordinates.lng,
     },
-    image: `${site.url}/images/hero-marina-aerial.jpg`,
+    image: socialImage,
   };
   return (
     <script

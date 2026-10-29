@@ -11,6 +11,7 @@ import { Reveal } from "@/components/reveal";
 import { DifferenceCardGrid } from "@/components/difference-card-grid";
 import { ConfiguredBookingLink } from "@/components/configured-link";
 import { getManagedSiteSettings } from "@/lib/managed-site";
+import { getPublicAssetPath } from "@/lib/public-assets";
 
 export const metadata: Metadata = {
   title: "Marina & Dockage",
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
     title: "Marina & Dockage · Exuma Yacht Club",
     description:
       "Protected dockage in the heart of George Town, Great Exuma — vessels up to 120 ft, power, water and fuel.",
-    images: ["/images/Marina/marina-docks.jpg"],
+    images: [getPublicAssetPath("/images/Marina/marina-docks.jpg")],
   },
 };
 
@@ -233,7 +234,11 @@ export default async function MarinaPage() {
             <h2 id="facilities-heading" className="sr-only">
               Marina facilities
             </h2>
-            <DifferenceCardGrid cards={facilityCards} layout="grid" />
+            <DifferenceCardGrid
+              cards={facilityCards}
+              layout="grid"
+              naturalHeight
+            />
           </div>
         </Container>
       </section>

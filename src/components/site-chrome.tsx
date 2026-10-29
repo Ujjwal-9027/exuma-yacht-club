@@ -3,6 +3,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import type { PublicContactSettings } from "@/lib/managed-site";
+import { BackToTopButton } from "@/components/back-to-top-button";
 import { PageLoadingOverlay } from "@/components/page-loading-overlay";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -81,6 +82,7 @@ export function SiteChrome({
       {!isAdmin && <SiteHeader />}
       <main id="main">{children}</main>
       {!isAdmin && <SiteFooter contactSettings={contactSettings} />}
+      {!isAdmin && <BackToTopButton />}
     </>
   );
 }

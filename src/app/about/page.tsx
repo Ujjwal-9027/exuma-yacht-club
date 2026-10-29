@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { ButtonLink, Container, PageHero } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
+import { getPublicAssetPath } from "@/lib/public-assets";
 
 export const metadata: Metadata = {
   title: "About",
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "About · Exuma Yacht Club",
     description: "The club, the marina and the harbour town we call home.",
-    images: ["/images/about-hero.jpg"],
+    images: [getPublicAssetPath("/images/about-hero.jpg")],
   },
 };
 
@@ -53,7 +54,7 @@ export default function AboutPage() {
         overline="About the Club"
         title="A club shaped by the harbour"
         lede="Set along the waterfront in George Town, Exuma Yacht Club Resort and Marina brings together a working marina, comfortable accommodation, a gift shop, and a waterfront restaurant and bar planned to open in December 2026. It's a place to arrive by water, settle in and experience life on Elizabeth Harbour."
-        image="/images/about-hero.jpg"
+        image={getPublicAssetPath("/images/about-hero.jpg")}
         imageAlt="Covered waterfront terrace at Exuma Yacht Club overlooking Elizabeth Harbour at sunset"
       />
 
@@ -86,7 +87,7 @@ export default function AboutPage() {
               <Reveal delay={100}>
                 <div className="hero-image-3d relative aspect-[4/5] overflow-hidden rounded border border-sand-200 bg-white">
                   <Image
-                    src="/images/marina-1.jpg"
+                    src={getPublicAssetPath("/images/marina-1.jpg")}
                     alt="Sunset over Elizabeth Harbour with sailboats and docks at Exuma Yacht Club"
                     fill
                     sizes="(min-width: 1024px) 40vw, 100vw"

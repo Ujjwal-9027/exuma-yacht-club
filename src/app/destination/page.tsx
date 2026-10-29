@@ -4,6 +4,7 @@ import { destinationContent } from "@/data/pages";
 import { ButtonLink, Container, PageHero } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { DifferenceCardGrid } from "@/components/difference-card-grid";
+import { getPublicAssetPath } from "@/lib/public-assets";
 
 const destinationCards = [
   {
@@ -45,7 +46,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Destination · Exuma Yacht Club",
     description: "365 islands and cays — welcome to Exuma, The Bahamas.",
-    images: ["/images/destination-hero.jpg"],
+    images: [getPublicAssetPath("/images/destination-hero.jpg")],
   },
 };
 
@@ -56,7 +57,7 @@ export default function DestinationPage() {
         overline="The Destination"
         title="Exuma & The Bahamas"
         lede={destinationContent.heroLede}
-        image="/images/destination-hero.jpg"
+        image={getPublicAssetPath("/images/destination-hero.jpg")}
         imageAlt="Palm trees framing turquoise water and the marina on Elizabeth Harbour"
       />
 
@@ -67,19 +68,19 @@ export default function DestinationPage() {
           <div className="mt-14 grid grid-cols-2 gap-4 lg:grid-cols-4">
             {[
               {
-                src: "/images/hero-marina-aerial.jpg",
+                src: getPublicAssetPath("/images/marina-1.jpg"),
                 alt: "Turquoise water and sandbars from the air in Exuma",
               },
               {
-                src: "/images/Marina/marina-docks.jpg",
+                src: getPublicAssetPath("/images/Marina/marina-docks.jpg"),
                 alt: "Yachts at rest in Elizabeth Harbour",
               },
               {
-                src: "/images/dining.jpg",
+                src: getPublicAssetPath("/images/dining.jpg"),
                 alt: "Evening light over the club's waterfront restaurant",
               },
               {
-                src: "/images/stay-room.jpg",
+                src: getPublicAssetPath("/images/stay-room.jpg"),
                 alt: "A harbour-view room at the club's boutique hotel",
               },
             ].map((img, i) => (

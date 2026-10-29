@@ -4,10 +4,11 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, X } from "lucide-react";
 import { Reveal } from "@/components/reveal";
+import { getPublicAssetPath } from "@/lib/public-assets";
 
 const galleryItems = [
   {
-    src: "/images/EYC%20About/EYC_main2.jpg",
+    src: getPublicAssetPath("/images/EYC%20About/EYC_main2.jpg"),
     alt: "View from the waterfront deck across palm-lined grounds toward the harbour docks",
     title: "A View Across the Harbour",
     category: "Island Views",
@@ -16,7 +17,7 @@ const galleryItems = [
     position: "object-center",
   },
   {
-    src: "/images/EYC%20About/EYC_main8.jpg",
+    src: getPublicAssetPath("/images/EYC%20About/EYC_main8.jpg"),
     alt: "Yachts and sailboats moored at the docks beneath a golden sunset",
     title: "Golden Hour at the Docks",
     category: "Marina Life",
@@ -25,7 +26,7 @@ const galleryItems = [
     position: "object-center",
   },
   {
-    src: "/images/EYC%20About/EYC_main11.jpg",
+    src: getPublicAssetPath("/images/EYC%20About/EYC_main11.jpg"),
     alt: "Guests seated on a shaded terrace beside the club's white building and palms",
     title: "A Table Beneath the Palms",
     category: "Dining",
@@ -33,7 +34,7 @@ const galleryItems = [
     position: "object-center",
   },
   {
-    src: "/images/EYC%20About/EYC_main6.jpg",
+    src: getPublicAssetPath("/images/EYC%20About/EYC_main6.jpg"),
     alt: "A covered waterfront veranda framed by palms in the evening light",
     title: "A Quiet Harbour Veranda",
     category: "Stay",

@@ -6,77 +6,77 @@ import { ArrowLeft, ArrowRight, X } from "lucide-react";
 
 const marinaSlides = [
   {
-    src: "/images/Marina/marina1.jpg",
+    src: "/test/Marina/marina1.jpg",
     alt: "The Exuma Yacht Club waterfront building beside clear turquoise water.",
     caption: "The club on the water",
   },
   {
-    src: "/images/Marina/marina2-web.jpg",
+    src: "/test/Marina/marina2-web.jpg",
     alt: "A wooden pier leading toward sailboats moored in bright turquoise water.",
     caption: "Out along the pier",
   },
   {
-    src: "/images/Marina/marina3.jpg",
+    src: "/test/Marina/marina3.jpg",
     alt: "A long view across the yacht club waterfront and marina docks.",
     caption: "Along the waterfront",
   },
   {
-    src: "/images/Marina/marina4.jpeg",
+    src: "/test/Marina/marina4.jpeg",
     alt: "A catamaran moored beside the marina dock.",
     caption: "Alongside at the dock",
   },
   {
-    src: "/images/Marina/marina5.jpeg",
+    src: "/test/Marina/marina5.jpeg",
     alt: "The marina dock beneath a rainbow over the waterfront.",
     caption: "A rainbow over the marina",
   },
   {
-    src: "/images/Marina/marina6.jpg",
+    src: "/test/Marina/marina6.jpg",
     alt: "Aerial view of George Town and the marina basin on Elizabeth Harbour.",
     caption: "George Town from above",
   },
   {
-    src: "/images/Marina/marina7.jpg",
+    src: "/test/Marina/marina7.jpg",
     alt: "Aerial view of marina docks and turquoise water along the Exuma coast.",
     caption: "Harbour and coastline",
   },
   {
-    src: "/images/Marina/marina8.jpg",
+    src: "/test/Marina/marina8.jpg",
     alt: "Boats moored along marina piers viewed from above.",
     caption: "The marina from above",
   },
   {
-    src: "/images/Marina/marina9.jpg",
+    src: "/test/Marina/marina9.jpg",
     alt: "Elizabeth Harbour and the marina shoreline seen from the air.",
     caption: "The harbour shoreline",
   },
   {
-    src: "/images/Marina/marina10.jpg",
+    src: "/test/Marina/marina10.jpg",
     alt: "The Exuma Yacht Club docks extending into clear island water.",
     caption: "Docks in clear water",
   },
   {
-    src: "/images/Marina/marina11.jpg",
+    src: "/test/Marina/marina11.jpg",
     alt: "Aerial view across the marina basin and surrounding George Town waterfront.",
     caption: "The marina basin",
   },
   {
-    src: "/images/Marina/marina12.jpg",
+    src: "/test/Marina/marina12.jpg",
     alt: "Yachts and smaller boats berthed along the marina docks.",
     caption: "Vessels at the docks",
   },
   {
-    src: "/images/Marina/marina13.jpg",
+    src: "/test/Marina/marina13.jpg",
     alt: "A wide aerial view of Elizabeth Harbour and its turquoise shallows.",
     caption: "Elizabeth Harbour",
   },
   {
-    src: "/images/Marina/marina14.jpg",
+    src: "/test/Marina/marina14.jpg",
     alt: "The Exuma coastline and marina viewed from above.",
     caption: "The Exuma coastline",
   },
   {
-    src: "/images/Marina/marina15.jpg",
+    src: "/test/Marina/marina15.jpg",
     alt: "An aerial view of the marina, breakwater and boats on Elizabeth Harbour.",
     caption: "Inside the breakwater",
   },
@@ -169,6 +169,7 @@ export function MarinaSlideshow() {
                     alt={isDuplicate ? "" : slide.alt}
                     fill
                     sizes="(min-width: 1280px) 360px, (min-width: 640px) 40vw, 78vw"
+                    unoptimized
                     className="object-cover"
                   />
                 </button>
@@ -226,6 +227,7 @@ export function MarinaSlideshow() {
                 alt={marinaSlides[selectedIndex].alt}
                 fill
                 sizes="100vw"
+                unoptimized
                 className="object-contain"
                 priority
               />

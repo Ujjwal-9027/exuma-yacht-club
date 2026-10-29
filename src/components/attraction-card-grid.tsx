@@ -13,6 +13,7 @@ import { useState, type MouseEvent } from "react";
 import { useEffect, useRef } from "react";
 import type { Attraction } from "@/data/pages";
 import { Reveal } from "@/components/reveal";
+import { getPublicAssetPath } from "@/lib/public-assets";
 
 const icons: LucideIcon[] = [
   Waves,
@@ -25,16 +26,27 @@ const icons: LucideIcon[] = [
 ];
 
 const attractionImages: Record<string, string> = {
-  "Swimming Pigs at Big Major Cay":
+  "Swimming Pigs at Big Major Cay": getPublicAssetPath(
     "/images/destinations/Swimming Pigs at Big Major Cay.jpg",
-  "Stocking Island": "/images/destinations/stocking-island.jpg",
-  "Chat 'N' Chill": "/images/destinations/chaat-n-chill.jpg",
-  "Thunderball Grotto": "/images/destinations/Thunderball Grotto.jpg",
-  "Exuma Cays Land and Sea Park":
+  ),
+  "Stocking Island": getPublicAssetPath(
+    "/images/destinations/stocking-island.jpg",
+  ),
+  "Chat 'N' Chill": getPublicAssetPath(
+    "/images/destinations/chaat-n-chill.jpg",
+  ),
+  "Thunderball Grotto": getPublicAssetPath(
+    "/images/destinations/Thunderball Grotto.jpg",
+  ),
+  "Exuma Cays Land and Sea Park": getPublicAssetPath(
     "/images/destinations/Exuma Cays Land and Sea Park.jpg",
-  "Tropic of Cancer Beach": "/images/destinations/Tropic of Cancer Beach.jpg",
-  "George Town Harbour Life":
+  ),
+  "Tropic of Cancer Beach": getPublicAssetPath(
+    "/images/destinations/Tropic of Cancer Beach.jpg",
+  ),
+  "George Town Harbour Life": getPublicAssetPath(
     "/images/destinations/George Town Harbour Life.jpg",
+  ),
 };
 
 export function AttractionCardGrid({

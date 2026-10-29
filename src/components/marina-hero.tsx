@@ -7,14 +7,15 @@ import { Phone } from "lucide-react";
 import { Container } from "@/components/ui";
 import { site } from "@/lib/site";
 import { BookingTransitionLink } from "@/components/booking-transition-link";
+import { getPublicAssetPath } from "@/lib/public-assets";
 
 const images = [
   {
-    src: "/images/marina-1.jpg",
+    src: getPublicAssetPath("/images/marina-1.jpg"),
     alt: "Sailboats and yachts moored along the docks at Exuma Yacht Club marina",
   },
   {
-    src: "/images/marina-2.jpg",
+    src: getPublicAssetPath("/images/marina-2.jpg"),
     alt: "Yachts resting in the protected waters of Exuma Yacht Club marina",
   },
 ];
@@ -79,6 +80,7 @@ export function MarinaHero({ dockwaUrl }: { dockwaUrl: string }) {
             <BookingTransitionLink
               bookingUrl={dockwaUrl}
               ariaLabel="Book marina dockage through Dockwa"
+              floatingVariant="angled"
             />
           )}
           <a

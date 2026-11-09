@@ -440,8 +440,8 @@ export async function saveSiteSettingsAction(
     whatsappNumber: String(formData.get("whatsappNumber") ?? "").replace(/[^0-9]/g, "").slice(0, 20),
     seoTitle: String(formData.get("seoTitle") ?? "").trim().slice(0, 160),
     seoDescription: String(formData.get("seoDescription") ?? "").trim().slice(0, 320),
-    homeHeroTitle: current?.homeHeroTitle ?? "Your Exuma escape starts here.",
-    homeHeroLede: current?.homeHeroLede ?? "Marina services, island stays, waterfront dining and essentials — all on the edge of Elizabeth Harbour.",
+    homeHeroTitle: current?.homeHeroTitle ?? "Exuma Yacht Club — More Than Just a Marina.",
+    homeHeroLede: current?.homeHeroLede ?? "Stay in the heart of George Town, with the waterfront at your door and Stocking Island beaches just a five-minute boat taxi away.",
     orderStatusEmailTemplates,
     ...(current?.adminPasswordHash ? { adminPasswordHash: current.adminPasswordHash } : {}),
   };

@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, MapPin, Phone, Radio, ShoppingBag } from "lucide-react";
 import { site } from "@/lib/site";
-import { config } from "@/config/site";
 import { getActiveProducts } from "@/lib/products";
 import { ButtonLink, Container, SectionHeading } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
@@ -17,72 +16,70 @@ export const dynamic = "force-dynamic";
 
 const differenceCards = [
   {
-    icon: "anchor",
-    title: "Room to Dock",
-    highlight: "4,000 linear feet of dockage",
+    icon: "waves",
+    title: "Stay on the Water",
+    highlight: "Waterfront rooms at EYC",
     description:
-      "Space to accommodate visiting vessels, subject to current marina capacity and restrictions.",
+      "Settle into a relaxed island base on the edge of Elizabeth Harbour.",
     detail:
-      "Dockage is confirmed by the marina team according to current capacity and vessel requirements.",
+      "Enjoy comfortable accommodation, a waterfront setting and the easy rhythm of life by the harbour.",
+  },
+  {
+    icon: "location",
+    title: "The Heart of George Town",
+    highlight: "Everything close by",
+    description:
+      "Stay in the centre of island life, with town essentials just across the street.",
+    detail:
+      "EYC is located in the heart of George Town, putting shops, local flavours and harbour life within easy reach.",
   },
   {
     icon: "ship",
-    title: "Visiting Vessels",
-    highlight: "Vessels up to 120 ft",
+    title: "Stocking Island Beaches",
+    highlight: "A five-minute boat taxi",
     description:
-      "Marina accommodation for eligible vessels, subject to berth availability and operational restrictions.",
+      "Go from the EYC dock to turquoise water, soft sand and island time.",
     detail:
-      "Berth placement and arrival arrangements are coordinated around availability and operating conditions.",
+      "Enjoy direct access to Stocking Island beaches from the EYC dock by boat taxi, around five minutes away.",
   },
   {
-    icon: "compass",
-    title: "Elizabeth Harbour",
-    highlight: "The Heart of George Town",
+    icon: "dining",
+    title: "An Easy Island Base",
+    highlight: "Stay, explore, unwind",
     description:
-      "Discover the harbour and enjoy convenient access to the surrounding town and island experiences.",
+      "Make the most of Great Exuma with a comfortable base between beach days and town adventures.",
     detail:
-      "Step ashore close to George Town amenities, with the harbour as your gateway to the island.",
-  },
-  {
-    icon: "waves",
-    title: "Marina Essentials",
-    highlight: "Essential Services",
-    description:
-      "Shore power, fresh water and fuel services, subject to current availability and operating conditions.",
-    detail:
-      "Ask the dock office about current power, water and fuel availability before arrival.",
+      "Return to the waterfront to slow down, recharge and plan your next Exuma experience.",
   },
 ] as const;
 
 const exploreCards = [
   {
-    overline: "The Marina",
-    title: "Marina & Dockage",
-    text: "Discover Elizabeth Harbour and explore marina facilities, dockage and essential services for visiting vessels.",
-    image: getPublicAssetPath("/images/Marina/marina-docks.jpg"),
-    imageAlt: "Sailboats and yachts moored along the docks at Exuma Yacht Club",
-    href: "/marina",
-    cta: "Explore the Marina",
-    secondaryHref: config.dockwaUrl,
-    secondaryCta: "Book Now",
-  },
-  {
-    overline: "The Hotel",
-    title: "Accommodation",
-    text: "Find your island base in George Town, with comfortable accommodation close to the harbour.",
+    overline: "Your Base in Exuma",
+    title: "Stay at EYC",
+    text: "Wake up beside Elizabeth Harbour and make Exuma Yacht Club your comfortable home base in George Town.",
     image: getPublicAssetPath("/images/stay-room.jpg"),
     imageAlt: "Boutique hotel room with sea view at Exuma Yacht Club",
     href: "/stay",
-    cta: "Plan Your Stay",
+    cta: "Explore Your Stay",
   },
   {
-    overline: "The Restaurant",
-    title: "Restaurant & Dining",
-    text: "A newly renovated waterfront restaurant and bar is expected to open in December 2026.",
-    image: getPublicAssetPath("/images/dining.jpg"),
-    imageAlt: "Open-air waterfront restaurant and bar overlooking the marina",
-    href: "/dining",
-    cta: "View Dining",
+    overline: "The Location",
+    title: "George Town at Your Door",
+    text: "Stay in the heart of George Town, with the harbour, shops and local island life all within easy reach.",
+    image: getPublicAssetPath("/images/Marina/marina-docks.jpg"),
+    imageAlt: "Sailboats and yachts moored along the docks at Exuma Yacht Club",
+    href: "/stay",
+    cta: "Discover the Location",
+  },
+  {
+    overline: "The Island Beyond",
+    title: "Stocking Island Beaches",
+    text: "Take a five-minute boat taxi from the EYC dock and spend the day on Stocking Island's famous beaches.",
+    image: getPublicAssetPath("/images/destination-hero.jpg"),
+    imageAlt: "Turquoise water and a sandy beach in the Exuma islands",
+    href: "/attractions",
+    cta: "Explore Exuma",
   },
 ];
 
@@ -124,19 +121,20 @@ export default async function HomePage() {
             <p className="overline-label !text-gold-400">
               GEORGE TOWN · GREAT EXUMA · THE BAHAMAS
             </p>
-            <h1 className="mt-5 max-w-2xl font-display text-4xl leading-[1.04] font-medium text-ivory-50 sm:text-6xl lg:text-8xl">
-              Your Exuma escape starts here.
+            <h1 className="mt-5 max-w-2xl font-display text-2xl leading-[1.04] font-medium text-ivory-50 sm:text-4xl lg:text-6xl">
+              Exuma Yacht Club — More Than Just a Marina.
             </h1>
             <p className="mt-6 max-w-xl text-base leading-relaxed text-ivory-100/90 sm:text-lg">
-              Discover marina services, island stays, waterfront dining and
-              everything you need for your time in Elizabeth Harbour.
+              Stay in the heart of George Town, with the waterfront at your
+              door and Stocking Island beaches just a five-minute boat taxi
+              away.
             </p>
             <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-              <ButtonLink href="/marina" variant="gold">
-                Explore the Marina
-              </ButtonLink>
-              <ButtonLink href="/stay" variant="outlineLight">
+              <ButtonLink href="/stay" variant="gold">
                 Plan Your Stay
+              </ButtonLink>
+              <ButtonLink href="/attractions" variant="outlineLight">
+                Explore Exuma
               </ButtonLink>
             </div>
             <div className="mt-12 flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-ivory-100/75">
@@ -159,34 +157,34 @@ export default async function HomePage() {
               id="difference-heading"
               className="mt-3 font-display text-3xl leading-tight text-navy-900 sm:text-4xl lg:text-5xl"
             >
-              A Marina Experience in the Heart of Exuma
+              A Waterfront Stay in the Heart of Exuma
             </h2>
             <p className="mt-5 max-w-2xl text-base leading-relaxed text-ink-500 sm:text-lg">
-              Discover the convenience of Elizabeth Harbour, with marina
-              facilities and essential services designed to support your time in
-              George Town, Bahamas.
+              Make EYC your home base for Great Exuma — close to town, steps
+              from the harbour and perfectly placed for a day on Stocking
+              Island.
             </p>
           </div>
           <DifferenceCardGrid cards={differenceCards} />
         </Container>
       </section>
 
-      {/* ── Three Ways to Experience Exuma ──────────────────── */}
+      {/* ── Your Stay at EYC ────────────────────────────────── */}
       <section aria-labelledby="explore-heading" className="py-20 lg:py-28">
         <Container>
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <SectionHeading
-              overline="Explore Exuma Yacht Club"
-              title="Three Ways to Experience Exuma"
-              lede="From a welcoming marina and boutique accommodation to waterfront dining, discover the experiences that make Exuma Yacht Club a special place to visit."
+              overline="Your Stay at EYC"
+              title="A Better Base for Your Exuma Escape"
+              lede="Stay waterfront in the heart of George Town, then step out into the harbour, the town and the beaches of Stocking Island."
             />
             <Reveal delay={120}>
               <ButtonLink
-                href="/contact"
+                href="/stay"
                 variant="outline"
                 className="shrink-0"
               >
-                Plan Your Visit
+                Book Your Stay
               </ButtonLink>
             </Reveal>
           </div>
@@ -215,11 +213,6 @@ export default async function HomePage() {
                       <h3 className="mt-2 font-display text-xl text-navy-900">
                         {card.title}
                       </h3>
-                      {card.href === "/dining" && (
-                        <p className="mt-2 inline-flex w-fit rounded-full bg-brand-plum-700 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-white">
-                          Coming December 2026
-                        </p>
-                      )}
                       <p className="mt-2 text-sm leading-relaxed text-ink-500">
                         {card.text}
                       </p>
@@ -236,28 +229,6 @@ export default async function HomePage() {
                         aria-hidden="true"
                       />
                     </Link>
-                    {card.secondaryHref && (
-                      <a
-                        href={card.secondaryHref}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-navy-900 transition-colors hover:text-gold-600"
-                      >
-                        {card.secondaryCta}
-                        <ArrowRight
-                          className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1"
-                          aria-hidden="true"
-                        />
-                      </a>
-                    )}
-                    {card.href === "/marina" && (
-                      <Link
-                        href="/booking-cancellation"
-                        className="text-xs font-medium text-ink-500 underline decoration-sand-400 underline-offset-4 hover:text-navy-900"
-                      >
-                        Review booking terms
-                      </Link>
-                    )}
                   </div>
                 </article>
               </Reveal>
